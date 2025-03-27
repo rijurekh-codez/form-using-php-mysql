@@ -64,8 +64,7 @@ echo $row["add_phoneno"];
                     </svg>
                     <p class="text-gray-600">Email</p>
                 </div>
-                <p class="mb-3 text-[17px] font-small"><?php echo $row['email'] ?></p>
-
+                <input type="text" class="bg-gray-400 rounded-sm px-2 mb-1 border-1 " value="<?php echo $row['email'] ?>">
 
                 <div class="text-center flex items-center gap-2">
                     <svg class="h-5 w-5 text-gray-500" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
@@ -74,7 +73,7 @@ echo $row["add_phoneno"];
                     </svg>
                     <p class="text-gray-600">Phone No</p>
                 </div>
-                <p class="mb-3 text-[17px] font-small"><?php echo $row['phoneno'] ?></p>
+                <input type="text" class="bg-gray-400 rounded-sm px-2 mb-1 border-1 " value="<?php echo $row['phoneno'] ?>">
 
 
                 <div class="text-center flex items-center gap-2">
@@ -87,7 +86,7 @@ echo $row["add_phoneno"];
                     </svg>
                     <p class="text-gray-600">Gender</p>
                 </div>
-                <p class="mb-3 text-[17px] font-small"><?php echo $row['gender'] ?></p>
+                <input type="text" class="bg-gray-400 rounded-sm px-2 mb-1 border-1 " value="<?php echo $row['gender'] ?>">
 
                 <div class="text-center flex items-center gap-2">
                     <svg class="h-6 w-6 text-gray-500" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
@@ -97,7 +96,7 @@ echo $row["add_phoneno"];
                     </svg>
                     <p class="text-gray-600">Language</p>
                 </div>
-                <p class="mb-3 text-[17px] font-small"><?php echo $row['language'] ?></p>
+                <input type="text" class="bg-gray-400 rounded-sm px-2 mb-1 border-1 " value="<?php echo $row['language'] ?>">
             </div>
 
 
@@ -119,7 +118,7 @@ echo $row["add_phoneno"];
 
                     <p class="text-gray-600">Street</p>
                 </div>
-                <p class="mb-3 text-[17px] font-small"><?php echo $row['street'] ?></p>
+                <input type="text" class="bg-gray-400 rounded-sm px-2 mb-1 border-1 " value="<?php echo $row['street'] ?>">
 
 
                 <div class="text-center flex items-center gap-2">
@@ -130,7 +129,7 @@ echo $row["add_phoneno"];
 
                     <p class="text-gray-600">City</p>
                 </div>
-                <p class="mb-3 text-[17px] font-small"><?php echo $row['city'] ?></p>
+                <input type="text" class="bg-gray-400 rounded-sm px-2 mb-1 border-1 " value="<?php echo $row['city'] ?>">
 
 
                 <div class="text-center flex items-center gap-2">
@@ -142,7 +141,7 @@ echo $row["add_phoneno"];
                     <p class="text-gray-600">State</p>
                 </div>
 
-                <p class="mb-3 text-[17px] font-small"><?php echo $row['state'] ?></p>
+                <input type="text" class="bg-gray-400 rounded-sm px-2 mb-1 border-1 " value="<?php echo $row['state'] ?>">
 
 
                 <div class="text-center flex items-center gap-2">
@@ -156,8 +155,7 @@ echo $row["add_phoneno"];
                     </svg>
                     <p class="text-gray-600">Country</p>
                 </div>
-                <p class="mb-3 text-[17px] font-small"><?php echo $row['country'] ?></p>
-
+                <input type="text" class="bg-gray-400 rounded-sm px-2 mb-1 border-1 " value="<?php echo $row['country'] ?>">
 
                 <div class="text-center flex items-center gap-2">
                     <svg class="h-5 w-5 text-gray-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -166,7 +164,7 @@ echo $row["add_phoneno"];
                     </svg>
                     <p class="text-gray-600">Zip code</p>
                 </div>
-                <p class="mb-3 text-[17px] font-small"><?php echo $row['zipcode'] ?></p>
+                <input type="text" class="bg-gray-400 rounded-sm px-2 mb-1 border-1 " value="<?php echo $row['zipcode'] ?>">
             </div>
         </div>
 
