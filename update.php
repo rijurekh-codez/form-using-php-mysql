@@ -38,10 +38,7 @@ echo $row["add_phoneno"];
             <div>
                 <p class="text-[30px] font-semibold"><?php echo $row['firstname'] . ' ' . $row['lastname']; ?></p>
                 <p class="text-[16px] text-gray-600"><?php echo '@' . $row['username'] ?></p>
-                <div class="mt-2 flex gap-2">
-                    <button class="border-1 p-1 rounded-md" style="cursor :pointer">Update Profile</button>
-                    <a href="logout.php" class="bg-black text-white px-3 py-1 rounded-sm text-[14px] text-center">Log Out</a>
-                </div>
+
             </div>
 
             <!-- details -->
@@ -171,6 +168,10 @@ echo $row["add_phoneno"];
                 </div>
                 <p class="mb-3 text-[17px] font-small"><?php echo $row['zipcode'] ?></p>
             </div>
+        </div>
+
+        <div class="mt-2 flex gap-2" style="margin-right: auto !important;">
+            <button class="border-1 p-1 rounded-md" style="cursor :pointer">Submit Changes</button>
         </div>
     </div>
 

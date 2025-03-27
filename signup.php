@@ -41,6 +41,9 @@
             <input type="text" name="phoneno" id="phoneno" class="bg-gray-50 border border-gray-300 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5" placeholder=" phone number" />
             <p id="phoneno-err" style="color:red; display:none;"></p>
           </div>
+          <div class="mb-2 pr-4">
+            <input type="text" name="add_phoneno" id="add_phoneno" class="bg-gray-50 border border-gray-300 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5" placeholder="Additional phone number" />
+          </div>
           <!-- Password -->
           <div class="mb-2 pr-4">
             <input type="password" id="password" name="password" class="bg-gray-50 border border-gray-300 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5" placeholder=" Password" />
@@ -169,11 +172,11 @@
           errorId: 'city-err',
           errorMsg: 'City is required'
         },
-        // {
-        //   id: 'state',
-        //   errorId: 'state-err',
-        //   errorMsg: 'State is required'
-        // },
+        {
+          id: 'state',
+          errorId: 'state-err',
+          errorMsg: 'State is required'
+        },
         {
           id: 'zipcode',
           errorId: 'zipcode-err',
@@ -1324,6 +1327,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
   $firstname = mysqli_real_escape_string($conn, $_POST["firstname"]);
   $lastname = mysqli_real_escape_string($conn, $_POST["lastname"]);
   $phoneno = mysqli_real_escape_string($conn, $_POST["phoneno"]);
+  $add_phoneno = mysqli_real_escape_string($conn, $_POST["add_phoneno"]);
   $gender = mysqli_real_escape_string($conn, $_POST["gender"]);
   $street = mysqli_real_escape_string($conn, $_POST["street"]);
   $city = mysqli_real_escape_string($conn, $_POST["city"]);
@@ -1357,8 +1361,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     exit;
   }
 
-  $sql = "INSERT INTO Persons (password, username, firstname, lastname, phoneno, gender, street, city, state, country, zipcode, language, email,image_path)
-          VALUES ('$password', '$username', '$firstname', '$lastname', '$phoneno', '$gender', '$street', '$city', '$state', '$country', '$zipcode', '$language', '$email','$file_name')";
+  $sql = "INSERT INTO Persons (password, username, firstname, lastname, phoneno, gender, street, city, state, country, zipcode, language, email,image_path,add_phoneno)
+          VALUES ('$password', '$username', '$firstname', '$lastname', '$phoneno', '$gender', '$street', '$city', '$state', '$country', '$zipcode', '$language', '$email','$file_name','$add_phoneno')";
 
   if ($conn->query($sql) === TRUE) {
     echo "Account Created Succesfully";
