@@ -20,6 +20,8 @@
 
         <!-- Personal details -->
         <h4>Personal Details:</h4>
+        <label for="image">Upload an image:</label>
+        <input type="file" name="image" id="image" accept="image/*" required>
         <div class="grid xs:grid-cols-12 md:grid-cols-2 lg:grid-cols-4 gap-2 mb-4">
           <div class="mb-2 pr-4">
             <input type="text" name="firstname" id="firstname" class="bg-gray-50 border border-gray-300 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5" placeholder=" first name" />
@@ -120,7 +122,6 @@
 
 
     function validateForm(event) {
-      event.preventDefault();
       var isValid = true;
 
       var fields = [{
@@ -168,11 +169,11 @@
           errorId: 'city-err',
           errorMsg: 'City is required'
         },
-        {
-          id: 'state',
-          errorId: 'state-err',
-          errorMsg: 'State is required'
-        },
+        // {
+        //   id: 'state',
+        //   errorId: 'state-err',
+        //   errorMsg: 'State is required'
+        // },
         {
           id: 'zipcode',
           errorId: 'zipcode-err',
@@ -181,9 +182,10 @@
       ];
 
       function checkField(field) {
+
         var value = document.getElementById(field.id).value.trim();
         var errorElement = document.getElementById(field.errorId);
-        if (value === "") {
+        if (value == "") {
           errorElement.style.display = "block";
           errorElement.textContent = field.errorMsg;
           isValid = false;
@@ -195,7 +197,7 @@
       fields.forEach(checkField);
       var password = document.getElementById('password').value;
       var confirmPassword = document.getElementById('confirmpassword').value;
-      if (password !== confirmPassword) {
+      if (password != confirmPassword) {
         var errorElement = document.getElementById('conpassword-err');
         errorElement.style.display = "block";
         errorElement.textContent = "Passwords do not match!";
@@ -221,6 +223,7 @@
       }
 
       var gender = document.querySelector('input[name="gender"]:checked');
+
       if (!gender) {
         var genderErrorElement = document.getElementById('gender-err');
         genderErrorElement.style.display = "block";
@@ -263,7 +266,15 @@
         errorElement.textContent = "Password must be at least 8 characters long.";
         isValid = false;
       }
-      return isvalid;
+
+
+      if (isValid) {
+        return true;
+      } else {
+
+        event.preventDefault();
+        return false;
+      }
     }
 
     //country state fetch
@@ -1296,8 +1307,6 @@
     <input type="text" name="state" class="bg-gray-50 border border-gray-300 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5" placeholder="Enter State" />
   `;
     }
-
-
     document.querySelector('form').addEventListener('submit', validateForm);
   </script>
 
@@ -1324,6 +1333,15 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
   $language = mysqli_real_escape_string($conn, $_POST["language"]);
   $email = mysqli_real_escape_string($conn, $_POST["email"]);
 
+
+  // image
+  $file_name = $_FILES['image']['name'];
+  $tempname =  $_FILES['image']['tmp_name'];
+  $folder = 'Uploads/' . $file_name;
+
+  if (move_uploaded_file($tempname, $folder)) {
+    // echo "file uploaded";
+  }
   if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
     echo "Invalid email format.";
     exit;
@@ -1339,12 +1357,11 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     exit;
   }
 
-
-  $sql = "INSERT INTO Persons (password, username, firstname, lastname, phoneno, gender, street, city, state, country, zipcode, language, email)
-          VALUES ('$password', '$username', '$firstname', '$lastname', '$phoneno', '$gender', '$street', '$city', '$state', '$country', '$zipcode', '$language', '$email')";
+  $sql = "INSERT INTO Persons (password, username, firstname, lastname, phoneno, gender, street, city, state, country, zipcode, language, email,image_path)
+          VALUES ('$password', '$username', '$firstname', '$lastname', '$phoneno', '$gender', '$street', '$city', '$state', '$country', '$zipcode', '$language', '$email','$file_name')";
 
   if ($conn->query($sql) === TRUE) {
-    echo "Account created sucessfully";
+    echo "Account Created Succesfully";
   } else {
     echo "Error: " . $sql . "<br>" . $conn->error;
   }
