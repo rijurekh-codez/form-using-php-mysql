@@ -1,20 +1,25 @@
+<?php
+session_start();
+
+if (!isset($_SESSION['user'])) {
+    header('Location: signin.php');
+    exit;
+}
+
+echo "Hello, " . $_SESSION['user'];
+?>
+
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dashboard</title>
-    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
-
+    <title>Document</title>
 </head>
+
 <body>
-   </body>
+    <a href="logout.php">Log Out</a>
+</body>
+
 </html>
-
-<?php 
-
-session_start();
-
-    echo "hello {$_SESSION["username"] }"
-
-?>

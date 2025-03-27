@@ -8,7 +8,7 @@
   <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
 </head>
 
-<body style="display: flex; justify-content: center; align-items:center ;flex-direction: column;" class="xl:h-screen sm:h-full">
+<body style="display: flex; justify-content: center; align-items:center ;flex-direction: column;" class=" sm:h-full">
 
   <div>
     <div class="bg-indigo-200 lg:rounded-lg ">
@@ -20,8 +20,6 @@
 
         <!-- Personal details -->
         <h4>Personal Details:</h4>
-        <label for="image">Upload an image:</label>
-        <input type="file" name="image" id="image" accept="image/*" required>
         <div class="grid xs:grid-cols-12 md:grid-cols-2 lg:grid-cols-4 gap-2 mb-4">
           <div class="mb-2 pr-4">
             <input type="text" name="firstname" id="firstname" class="bg-gray-50 border border-gray-300 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5" placeholder=" first name" />
@@ -53,8 +51,10 @@
             <p id="conpassword-err" style="color:red; display:none;"></p>
           </div>
         </div>
+        <label for="image" class=" mb-2 text-sm ">Upload an image:</label>
+        <input type="file" class=" text-sm border border-gray-300 rounded-lg cursor-pointer focus:outline-none light:bg-gray-700 dark:border-gray-500 " name="image" id="image" accept="image/*" required>
 
-        <h4>Address:</h4>
+        <h4 class="mt-5">Address:</h4>
         <div class="grid xs:grid-cols-12 md:grid-cols-2 lg:grid-cols-4 gap-2 mb-4">
           <!-- Address -->
           <div class="mb-2 pr-4">
