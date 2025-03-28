@@ -39,7 +39,10 @@ echo $row["add_phoneno"];
                 <p class="text-[30px] font-semibold"><?php echo $row['firstname'] . ' ' . $row['lastname']; ?></p>
                 <p class="text-[16px] text-gray-600"><?php echo '@' . $row['username'] ?></p>
                 <div class="mt-2 flex gap-2">
-                    <button class="border-1 p-1 rounded-md" style="cursor :pointer">Update Profile</button>
+
+                    <a href="update.php" class=" text-black border-1 px-3 py-1 rounded-sm text-[14px] text-center">Update Profile</a>
+
+
                     <a href="logout.php" class="bg-black text-white px-3 py-1 rounded-sm text-[14px] text-center">Log Out</a>
                 </div>
             </div>
