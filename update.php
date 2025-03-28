@@ -89,13 +89,24 @@ $conn->close();
     </script>
 </head>
 
-<body class="px-4 mt-2 ">
+<body class="px-4 mt-2 flex justify-center">
 
     <div class="border-2 border-gray-300 rounded-lg p-5 w-200 bg-gray-100">
         <form class="p-4 2xl:w-250 lg:w-200 md:w-auto" action="update.php" method="post" id="myform" enctype="multipart/form-data">
 
-            <div class="flex items-center gap-4 mb-7">
-                <img class="w-[150px] rounded-full mt-2" src="<?php echo 'Uploads/' . $row['image_path']; ?>" alt="">
+            <div class="flex flex-col md:flex-row items-center gap-4 mb-7">
+
+                <div class="">
+                    <div class=" relative w-[150px] rounded-full mt-2">
+                        <img class="profile-image w-full rounded-full" src="<?php echo 'Uploads/' . $row['image_path']; ?>" alt="Profile Image">
+
+                        <div class="absolute top-0 left-0 w-full h-full flex items-center justify-center bg-transparent bg-opacity-50 opacity-0 hover:opacity-100 transition-opacity backdrop-blur-md rounded-full text-center">
+                            <p class="text-white cursor-pointer
+">Update Profile Picture</p>
+                        </div>
+
+                    </div>
+                </div>
 
                 <div>
                     <p class="text-[30px] font-semibold"><?php echo $row['firstname'] . ' ' . $row['lastname']; ?></p>
@@ -106,7 +117,7 @@ $conn->close();
                 <!-- details -->
 
             </div>
-            <div class="grid grid-cols-2 gap-4">
+            <div class="grid lg:grid-cols-2 md:grid-cols-2 gap-4 sm:grid-cols-2 xs:grid-cols-1">
                 <div>
                     <div class="text-center flex items-center gap-2 mb-4">
                         <svg class="h-5 w-5 text-neutral-700 " fill="none" viewBox="0 0 24 24" stroke="currentColor">

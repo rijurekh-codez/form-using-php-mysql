@@ -32,7 +32,7 @@ echo $row["add_phoneno"];
 <body class="px-4 mt-2 flex justify-center">
 
     <div class="border-2 border-gray-300 rounded-lg p-5 w-200 bg-gray-100">
-        <div class="flex items-center gap-4 mb-7">
+        <div class="flex flex flex-col md:flex-row items-center gap-4 mb-7  ">
             <img class="w-[150px] rounded-full mt-2" src="<?php echo 'Uploads/' . $row['image_path']; ?>" alt="">
 
             <div>
@@ -50,8 +50,7 @@ echo $row["add_phoneno"];
             <!-- details -->
 
         </div>
-        <div class="grid grid-cols-2 gap-4">
-
+        <div class="grid lg:grid-cols-2 md:grid-cols-2 gap-4 sm:grid-cols-2 xs:grid-cols-1 gap-4">
 
             <div>
 
