@@ -105,8 +105,8 @@
 
           <div class="mb-2 pr-4">
             <p>Languages: </p>
-            <input type="checkbox" name="languages[]" value="English"> English <br>
-            <input type="checkbox" name="languages[]" value="Hindi"> Hindi <br>
+            <input type="checkbox" name="languages[]" value="English" class="inline"> English <br>
+            <input type="checkbox" name="languages[]" value="Hindi" class="inline"> Hindi <br>
             <input type="checkbox" name="languages[]" value="Bengali"> Bengali <br>
 
             <p id="language-err" style="color:red; display:none;"></p>

@@ -158,6 +158,22 @@ function validateForm(event) {
     isValid = false;
   }
 
+  var phoneno = document.getElementById("phoneno").value;
+  if (phoneno && phoneno.length != 10) {
+    var errorElement = document.getElementById("phoneno-err");
+    errorElement.style.display = "block";
+    errorElement.textContent = "Please Enter phone number of length 10";
+    isValid = false;
+  }
+
+  const phoneno_regex = /^\+[1-9]\d{1,14}$/;
+  if (phoneno_regex.test(phoneno)) {
+    var errorElement = document.getElementById("phoneno-err");
+    errorElement.style.display = "block";
+    errorElement.textContent = "Phone no can only contain numbers.";
+    isValid = false;
+  }
+
   if (password.length >= 1 && password.length < 8) {
     var errorElement = document.getElementById("password-err");
     errorElement.style.display = "block";
