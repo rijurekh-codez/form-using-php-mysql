@@ -1,10 +1,178 @@
 if (window.history.replaceState) {
   window.history.replaceState(null, null, window.location.href);
 }
+var isValid = true;
+
+document
+  .getElementById("firstname")
+  .addEventListener("input", function (event) {
+    var firstname = document.getElementById("firstname").value.trim();
+    var errorElement = document.getElementById("firstname-err");
+
+    if (firstname == "") {
+      errorElement.style.display = "block";
+      errorElement.textContent = "firstname is required";
+      isValid = false;
+    } else {
+      var regex = /^[A-Za-z\s]+$/;
+      if (!firstname.match(regex)) {
+        errorElement.style.display = "block";
+        errorElement.textContent =
+          "First Name can only contain alphabetic characters and spaces.";
+        isValid = false;
+      } else {
+        errorElement.style.display = "none";
+        isValid = true;
+      }
+    }
+  });
+
+document.getElementById("lastname").addEventListener("input", function (event) {
+  var lastname = document.getElementById("lastname").value.trim();
+  var errorElement = document.getElementById("lastname-err");
+
+  if (lastname == "") {
+    errorElement.style.display = "block";
+    errorElement.textContent = "lastname is required";
+    isValid = false;
+  } else {
+    var regex = /^[A-Za-z\s]+$/;
+    if (!lastname.match(regex)) {
+      errorElement.style.display = "block";
+      errorElement.textContent =
+        "Last Name can only contain alphabetic characters and spaces.";
+      isValid = false;
+    } else {
+      errorElement.style.display = "none";
+      isValid = true;
+    }
+  }
+});
+
+document.getElementById("username").addEventListener("input", function (event) {
+  var username = document.getElementById("username").value.trim();
+  var errorElement = document.getElementById("username-err");
+
+  if (username == "") {
+    errorElement.style.display = "block";
+    errorElement.textContent = "Username is required";
+    isValid = false;
+  }
+});
+
+document.getElementById("email").addEventListener("input", function (event) {
+  var email = document.getElementById("email").value.trim();
+  var errorElement = document.getElementById("email-err");
+
+  if (email == "") {
+    errorElement.style.display = "block";
+    errorElement.textContent = "Email is required";
+    isValid = false;
+  } else {
+    var regex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+    if (!email.match(regex)) {
+      errorElement.style.display = "block";
+      errorElement.textContent = "Please Enter a valid email.";
+      isValid = false;
+    } else {
+      errorElement.style.display = "none";
+      isValid = true;
+    }
+  }
+});
+
+document.getElementById("password").addEventListener("input", function (event) {
+  var password = document.getElementById("password").value.trim();
+  var errorElement = document.getElementById("password-err");
+
+  if (password == "") {
+    errorElement.style.display = "block";
+    errorElement.textContent = "Password is required.";
+    isValid = false;
+  } else {
+    var passwordRegex =
+      /^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[^A-Za-z0-9]).{8,}$/;
+
+    if (!passwordRegex.test(password)) {
+      errorElement.style.display = "block";
+      errorElement.textContent =
+        "Password must be at least 8 characters long and include at least one uppercase letter, one lowercase letter, one number, and one special character.";
+      isValid = false;
+    } else {
+      errorElement.style.display = "none";
+      isValid = true;
+    }
+  }
+});
+
+document
+  .getElementById("confirmpassword")
+  .addEventListener("input", function (event) {
+    var confirmpassword = document
+      .getElementById("confirmpassword")
+      .value.trim();
+    var errorElement = document.getElementById("conpassword-err");
+    var password = document.getElementById("password").value.trim();
+
+    if (confirmpassword == "") {
+      errorElement.style.display = "block";
+      errorElement.textContent = "Confirm Password is required";
+      isValid = false;
+    } else {
+      if (password != confirmpassword) {
+        errorElement.style.display = "block";
+        errorElement.textContent = "Passwords do not match!";
+        isValid = false;
+      } else {
+        errorElement.style.display = "none";
+        isValid = true;
+      }
+    }
+  });
+
+document.getElementById("street").addEventListener("input", function (event) {
+  var street = document.getElementById("street").value.trim();
+  var errorElement = document.getElementById("street-err");
+
+  if (street == "") {
+    errorElement.style.display = "block";
+    errorElement.textContent = "street is required";
+    isValid = false;
+  }
+});
+
+document.getElementById("city").addEventListener("input", function (event) {
+  var city = document.getElementById("city").value.trim();
+  var errorElement = document.getElementById("city-err");
+
+  if (city == "") {
+    errorElement.style.display = "block";
+    errorElement.textContent = "city is required";
+    isValid = false;
+  }
+});
+
+document.getElementById("zipcode").addEventListener("input", function (event) {
+  var zipcode = document.getElementById("zipcode").value.trim();
+  var errorElement = document.getElementById("zipcode-err");
+  if (zipcode == "") {
+    errorElement.style.display = "block";
+    errorElement.textContent = "zipcode is required";
+    isValid = false;
+  }
+});
+
+document.getElementById("state").addEventListener("input", function (event) {
+  var state = document.getElementById("state").value.trim();
+  var errorElement = document.getElementById("state-err");
+  if (state == "") {
+    errorElement.style.display = "block";
+    errorElement.textContent = "state is required";
+    isValid = false;
+  }
+});
 
 function validateForm(event) {
-  var isValid = true;
-
   var fields = [
     {
       id: "firstname",
@@ -76,24 +244,6 @@ function validateForm(event) {
   }
 
   fields.forEach(checkField);
-  var password = document.getElementById("password").value;
-  var confirmPassword = document.getElementById("confirmpassword").value;
-  if (password != confirmPassword) {
-    var errorElement = document.getElementById("conpassword-err");
-    errorElement.style.display = "block";
-    errorElement.textContent = "Passwords do not match!";
-    isValid = false;
-  }
-
-  var firstName = document.getElementById("firstname").value;
-  var firstNameRegex = /^[A-Za-z\s]+$/;
-  if (firstName && !firstName.match(firstNameRegex)) {
-    var errorElement = document.getElementById("firstname-err");
-    errorElement.style.display = "block";
-    errorElement.textContent =
-      "First name can only contain alphabetic characters and spaces.";
-    isValid = false;
-  }
 
   var imgField = document.getElementById("image").value;
   if (imgField == "") {
@@ -103,18 +253,7 @@ function validateForm(event) {
     isValid = false;
   }
 
-  var lastName = document.getElementById("lastname").value;
-  var lastNameRegex = /^[A-Za-z\s]+$/;
-  if (lastName && !lastName.match(lastNameRegex)) {
-    var errorElement = document.getElementById("lastname-err");
-    errorElement.style.display = "block";
-    errorElement.textContent =
-      "Last name can only contain alphabetic characters and spaces.";
-    isValid = false;
-  }
-
   var gender = document.querySelector('input[name="gender"]:checked');
-
   if (!gender) {
     var genderErrorElement = document.getElementById("gender-err");
     genderErrorElement.style.display = "block";
@@ -149,14 +288,6 @@ function validateForm(event) {
   } else {
     document.getElementById("country-err").style.display = "none";
   }
-  var email = document.getElementById("email").value;
-  var emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
-  if (email && !email.match(emailRegex)) {
-    var errorElement = document.getElementById("email-err");
-    errorElement.style.display = "block";
-    errorElement.textContent = "Please enter a valid email address.";
-    isValid = false;
-  }
 
   var phoneno = document.getElementById("phoneno").value;
   if (phoneno && phoneno.length != 10) {
@@ -167,17 +298,10 @@ function validateForm(event) {
   }
 
   const phoneno_regex = /^\+[1-9]\d{1,14}$/;
-  if (phoneno_regex.test(phoneno)) {
+  if (phoneno && !phoneno_regex.test(phoneno)) {
     var errorElement = document.getElementById("phoneno-err");
     errorElement.style.display = "block";
     errorElement.textContent = "Phone no can only contain numbers.";
-    isValid = false;
-  }
-
-  if (password.length >= 1 && password.length < 8) {
-    var errorElement = document.getElementById("password-err");
-    errorElement.style.display = "block";
-    errorElement.textContent = "Password must be at least 8 characters long.";
     isValid = false;
   }
 
@@ -1245,7 +1369,7 @@ function showStatesDropdown() {
 function showNormalTextbox() {
   const stateContainer = document.getElementById("state-container");
   stateContainer.innerHTML = `
-    <input type="text" name="state" class="bg-gray-50 border border-gray-300 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5" placeholder="Enter State" />
+    <input type="text" id="state" name="state" class="bg-gray-50 border border-gray-300 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5" placeholder="Enter State" />
   `;
 }
 document.querySelector("form").addEventListener("submit", validateForm);
