@@ -19,7 +19,6 @@ $add_phoneno = isset($row["add_phoneno"]) && $row["add_phoneno"] !== NULL ? $row
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
-    echo $_POST["state"];
     $phoneno = mysqli_real_escape_string($conn, $_POST["phoneno"]);
     $add_phoneno = mysqli_real_escape_string($conn, $_POST["add_phoneno"]);
     $gender = mysqli_real_escape_string($conn, $_POST["gender"]);
@@ -28,8 +27,9 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $state = mysqli_real_escape_string($conn, $_POST["state"]);
     $country = mysqli_real_escape_string($conn, $_POST["country"]);
     $zipcode = mysqli_real_escape_string($conn, $_POST["zipcode"]);
-    $language = mysqli_real_escape_string($conn, $_POST["language"]);
     $email = mysqli_real_escape_string($conn, $_POST["email"]);
+    $languages = isset($row['languages']) ? $_POST['languages'] : '';
+    $all_languages = isset($row['languages']) ? implode(",", $languages) : '';
 
 
     $sql = "UPDATE Persons SET 
@@ -41,13 +41,15 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 state = '$state', 
                 country = '$country', 
                 zipcode = '$zipcode', 
-                language = '$language', 
+                languages = '$all_languages', 
                 email = '$email' 
             WHERE username = ?";
 
     $stmt = $conn->prepare($sql);
     $stmt->bind_param("s", $_SESSION['user']);
     if ($stmt->execute()) {
+        // $path = 'Uploads/' . $row['image_path'];
+        // unlink($path);
         header("Location: dashboard.php");
         exit;
     } else {
@@ -65,7 +67,7 @@ $conn->close();
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>Update Profile</title>
     <link href="https://cdn.jsdelivr.net/npm/sweetalert2@11.7.0/dist/sweetalert2.min.css" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.7.0/dist/sweetalert2.all.min.js"></script>
 
@@ -101,8 +103,7 @@ $conn->close();
                         <img class="profile-image w-full rounded-full" src="<?php echo 'Uploads/' . $row['image_path']; ?>" alt="Profile Image">
 
                         <div class="absolute top-0 left-0 w-full h-full flex items-center justify-center bg-transparent bg-opacity-50 opacity-0 hover:opacity-100 transition-opacity backdrop-blur-md rounded-full text-center">
-                            <p class="text-white cursor-pointer
-">Update Profile Picture</p>
+                            <p class="text-white cursor-pointer">Update Profile Picture</p>
                         </div>
 
                     </div>
@@ -134,7 +135,7 @@ $conn->close();
                         </svg>
                         <p class="text-gray-600">Email</p>
                     </div>
-                    <input type="text" name="email" class="bg-gray-400 rounded-sm px-2 mb-1 border-1 " value="<?php echo $row['email'] ?>">
+                    <input type="text" name="email" id="email" class="bg-gray-400 rounded-sm px-2 mb-1 border-1 " value="<?php echo $row['email'] ?>">
 
                     <div class="text-center flex items-center gap-2">
                         <svg class="h-5 w-5 text-gray-500" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
@@ -143,7 +144,7 @@ $conn->close();
                         </svg>
                         <p class="text-gray-600">Phone No</p>
                     </div>
-                    <input type="text" name="phoneno" class="bg-gray-400 rounded-sm px-2 mb-1 border-1 " value="<?php echo $row['phoneno'] ?>">
+                    <input type="text" name="phoneno" id="phoneno" class="bg-gray-400 rounded-sm px-2 mb-1 border-1 " value="<?php echo $row['phoneno'] ?>">
 
 
                     <div class="text-center flex items-center gap-2">
@@ -153,7 +154,7 @@ $conn->close();
                         </svg>
                         <p class="text-gray-600">Additonal Phone No</p>
                     </div>
-                    <input type="text" class="bg-gray-400 rounded-sm px-2 mb-1 border-1" name="add_phoneno" value="<?php echo htmlspecialchars($add_phoneno); ?>" />
+                    <input type="text" class="bg-gray-400 rounded-sm px-2 mb-1 border-1" id="add_phoneno" name="add_phoneno" value="<?php echo htmlspecialchars($add_phoneno); ?>" />
 
 
                     <div class="text-center flex items-center gap-2">
@@ -185,11 +186,12 @@ $conn->close();
                         </svg>
                         <p class="text-gray-600">Language</p>
                     </div>
-                    <select name="language" id="language" class="bg-gray-400 rounded-sm px-2 mb-1 border-1 focus:ring-gray-900 focus:border-gray-900 py-1 w-50">
-                        <option value="English" <?php if ($row['language'] == 'English') echo 'selected'; ?>>English</option>
-                        <option value="Hindi" <?php if ($row['language'] == 'Hindi') echo 'selected'; ?>>Hindi</option>
-                        <option value="Bengali" <?php if ($row['language'] == 'Bengali') echo 'selected'; ?>>Bengali</option>
-                    </select>
+
+
+
+                    <input type="checkbox" name="languages[]" value="English" class="inline" <?php if (isset($row['languages']) && str_contains($row['languages'], 'English')) echo 'checked'; ?>> English <br>
+                    <input type="checkbox" name="languages[]" value="Hindi" class="inline" <?php if (isset($row['languages']) && str_contains($row['languages'], 'Hindi')) echo 'checked'; ?>> Hindi <br>
+                    <input type="checkbox" name="languages[]" value="Bengali" <?php if (isset($row['languages']) && str_contains($row['languages'], 'Bengali')) echo 'checked'; ?>> Bengali <br>
 
                 </div>
 
@@ -212,7 +214,7 @@ $conn->close();
 
                         <p class="text-gray-600">Street</p>
                     </div>
-                    <input type="text" name="street" class="bg-gray-400 rounded-sm px-2 mb-1 border-1 " value="<?php echo $row['street'] ?>">
+                    <input type="text" id="street" name="street" class="bg-gray-400 rounded-sm px-2 mb-1 border-1 " value="<?php echo $row['street'] ?>">
 
 
                     <div class="text-center flex items-center gap-2">
@@ -223,7 +225,7 @@ $conn->close();
 
                         <p class="text-gray-600">City</p>
                     </div>
-                    <input type="text" name="city" class="bg-gray-400 rounded-sm px-2 mb-1 border-1 " value="<?php echo $row['city'] ?>">
+                    <input type="text" id="city" name="city" class="bg-gray-400 rounded-sm px-2 mb-1 border-1 " value="<?php echo $row['city'] ?>">
 
 
                     <div class="text-center flex items-center gap-2">
@@ -235,7 +237,7 @@ $conn->close();
                         <p class="text-gray-600">State</p>
                     </div>
 
-                    <input type="text" name="state" class="bg-gray-400 rounded-sm px-2 mb-1 border-1" value="<?php echo $row['state'] ?>">
+                    <input type="text" id="state" name="state" class="bg-gray-400 rounded-sm px-2 mb-1 border-1" value="<?php echo $row['state'] ?>">
 
 
                     <div class="text-center flex items-center gap-2">
@@ -249,7 +251,11 @@ $conn->close();
                         </svg>
                         <p class="text-gray-600">Country</p>
                     </div>
-                    <input type="text" class="bg-gray-400 rounded-sm px-2 mb-1 border-1" name="country" value="<?php echo $row['country'] ?>">
+                    <select name="country" id="country" class="bg-gray-400 rounded-sm px-2 mb-1 border-1 focus:ring-gray-900 focus:border-gray-900 py-1 w-50">
+                        <option selected>
+
+                        </option>
+                    </select>
 
                     <div class="text-center flex items-center gap-2">
                         <svg class="h-5 w-5 text-gray-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -258,7 +264,7 @@ $conn->close();
                         </svg>
                         <p class="text-gray-600">Zip code</p>
                     </div>
-                    <input type="text" class="bg-gray-400 rounded-sm px-2 mb-1 border-1 " name="zipcode" value="<?php echo $row['zipcode'] ?>">
+                    <input type="text" id="zipcode" class="bg-gray-400 rounded-sm px-2 mb-1 border-1 " name="zipcode" value="<?php echo $row['zipcode'] ?>">
                 </div>
             </div>
 
@@ -268,6 +274,996 @@ $conn->close();
         </form>
     </div>
 
+
+    <script>
+        let countryData = [{
+                name: "Afghanistan",
+                code: "AF",
+            },
+            {
+                name: "Åland Islands",
+                code: "AX",
+            },
+            {
+                name: "Albania",
+                code: "AL",
+            },
+            {
+                name: "Algeria",
+                code: "DZ",
+            },
+            {
+                name: "American Samoa",
+                code: "AS",
+            },
+            {
+                name: "AndorrA",
+                code: "AD",
+            },
+            {
+                name: "Angola",
+                code: "AO",
+            },
+            {
+                name: "Anguilla",
+                code: "AI",
+            },
+            {
+                name: "Antarctica",
+                code: "AQ",
+            },
+            {
+                name: "Antigua and Barbuda",
+                code: "AG",
+            },
+            {
+                name: "Argentina",
+                code: "AR",
+            },
+            {
+                name: "Armenia",
+                code: "AM",
+            },
+            {
+                name: "Aruba",
+                code: "AW",
+            },
+            {
+                name: "Australia",
+                code: "AU",
+            },
+            {
+                name: "Austria",
+                code: "AT",
+            },
+            {
+                name: "Azerbaijan",
+                code: "AZ",
+            },
+            {
+                name: "Bahamas",
+                code: "BS",
+            },
+            {
+                name: "Bahrain",
+                code: "BH",
+            },
+            {
+                name: "Bangladesh",
+                code: "BD",
+            },
+            {
+                name: "Barbados",
+                code: "BB",
+            },
+            {
+                name: "Belarus",
+                code: "BY",
+            },
+            {
+                name: "Belgium",
+                code: "BE",
+            },
+            {
+                name: "Belize",
+                code: "BZ",
+            },
+            {
+                name: "Benin",
+                code: "BJ",
+            },
+            {
+                name: "Bermuda",
+                code: "BM",
+            },
+            {
+                name: "Bhutan",
+                code: "BT",
+            },
+            {
+                name: "Bolivia",
+                code: "BO",
+            },
+            {
+                name: "Bosnia and Herzegovina",
+                code: "BA",
+            },
+            {
+                name: "Botswana",
+                code: "BW",
+            },
+            {
+                name: "Bouvet Island",
+                code: "BV",
+            },
+            {
+                name: "Brazil",
+                code: "BR",
+            },
+            {
+                name: "British Indian Ocean Territory",
+                code: "IO",
+            },
+            {
+                name: "Brunei Darussalam",
+                code: "BN",
+            },
+            {
+                name: "Bulgaria",
+                code: "BG",
+            },
+            {
+                name: "Burkina Faso",
+                code: "BF",
+            },
+            {
+                name: "Burundi",
+                code: "BI",
+            },
+            {
+                name: "Cambodia",
+                code: "KH",
+            },
+            {
+                name: "Cameroon",
+                code: "CM",
+            },
+            {
+                name: "Canada",
+                code: "CA",
+            },
+            {
+                name: "Cape Verde",
+                code: "CV",
+            },
+            {
+                name: "Cayman Islands",
+                code: "KY",
+            },
+            {
+                name: "Central African Republic",
+                code: "CF",
+            },
+            {
+                name: "Chad",
+                code: "TD",
+            },
+            {
+                name: "Chile",
+                code: "CL",
+            },
+            {
+                name: "China",
+                code: "CN",
+            },
+            {
+                name: "Christmas Island",
+                code: "CX",
+            },
+            {
+                name: "Cocos (Keeling) Islands",
+                code: "CC",
+            },
+            {
+                name: "Colombia",
+                code: "CO",
+            },
+            {
+                name: "Comoros",
+                code: "KM",
+            },
+            {
+                name: "Congo",
+                code: "CG",
+            },
+            {
+                name: "Congo, The Democratic Republic of the",
+                code: "CD",
+            },
+            {
+                name: "Cook Islands",
+                code: "CK",
+            },
+            {
+                name: "Costa Rica",
+                code: "CR",
+            },
+            {
+                name: "Cote D'Ivoire",
+                code: "CI",
+            },
+            {
+                name: "Croatia",
+                code: "HR",
+            },
+            {
+                name: "Cuba",
+                code: "CU",
+            },
+            {
+                name: "Cyprus",
+                code: "CY",
+            },
+            {
+                name: "Czech Republic",
+                code: "CZ",
+            },
+            {
+                name: "Denmark",
+                code: "DK",
+            },
+            {
+                name: "Djibouti",
+                code: "DJ",
+            },
+            {
+                name: "Dominica",
+                code: "DM",
+            },
+            {
+                name: "Dominican Republic",
+                code: "DO",
+            },
+            {
+                name: "Ecuador",
+                code: "EC",
+            },
+            {
+                name: "Egypt",
+                code: "EG",
+            },
+            {
+                name: "El Salvador",
+                code: "SV",
+            },
+            {
+                name: "Equatorial Guinea",
+                code: "GQ",
+            },
+            {
+                name: "Eritrea",
+                code: "ER",
+            },
+            {
+                name: "Estonia",
+                code: "EE",
+            },
+            {
+                name: "Ethiopia",
+                code: "ET",
+            },
+            {
+                name: "Falkland Islands (Malvinas)",
+                code: "FK",
+            },
+            {
+                name: "Faroe Islands",
+                code: "FO",
+            },
+            {
+                name: "Fiji",
+                code: "FJ",
+            },
+            {
+                name: "Finland",
+                code: "FI",
+            },
+            {
+                name: "France",
+                code: "FR",
+            },
+            {
+                name: "French Guiana",
+                code: "GF",
+            },
+            {
+                name: "French Polynesia",
+                code: "PF",
+            },
+            {
+                name: "French Southern Territories",
+                code: "TF",
+            },
+            {
+                name: "Gabon",
+                code: "GA",
+            },
+            {
+                name: "Gambia",
+                code: "GM",
+            },
+            {
+                name: "Georgia",
+                code: "GE",
+            },
+            {
+                name: "Germany",
+                code: "DE",
+            },
+            {
+                name: "Ghana",
+                code: "GH",
+            },
+            {
+                name: "Gibraltar",
+                code: "GI",
+            },
+            {
+                name: "Greece",
+                code: "GR",
+            },
+            {
+                name: "Greenland",
+                code: "GL",
+            },
+            {
+                name: "Grenada",
+                code: "GD",
+            },
+            {
+                name: "Guadeloupe",
+                code: "GP",
+            },
+            {
+                name: "Guam",
+                code: "GU",
+            },
+            {
+                name: "Guatemala",
+                code: "GT",
+            },
+            {
+                name: "Guernsey",
+                code: "GG",
+            },
+            {
+                name: "Guinea",
+                code: "GN",
+            },
+            {
+                name: "Guinea-Bissau",
+                code: "GW",
+            },
+            {
+                name: "Guyana",
+                code: "GY",
+            },
+            {
+                name: "Haiti",
+                code: "HT",
+            },
+            {
+                name: "Heard Island and Mcdonald Islands",
+                code: "HM",
+            },
+            {
+                name: "Holy See (Vatican City State)",
+                code: "VA",
+            },
+            {
+                name: "Honduras",
+                code: "HN",
+            },
+            {
+                name: "Hong Kong",
+                code: "HK",
+            },
+            {
+                name: "Hungary",
+                code: "HU",
+            },
+            {
+                name: "Iceland",
+                code: "IS",
+            },
+            {
+                name: "India",
+                code: "IN",
+            },
+            {
+                name: "Indonesia",
+                code: "ID",
+            },
+            {
+                name: "Iran, Islamic Republic Of",
+                code: "IR",
+            },
+            {
+                name: "Iraq",
+                code: "IQ",
+            },
+            {
+                name: "Ireland",
+                code: "IE",
+            },
+            {
+                name: "Isle of Man",
+                code: "IM",
+            },
+            {
+                name: "Israel",
+                code: "IL",
+            },
+            {
+                name: "Italy",
+                code: "IT",
+            },
+            {
+                name: "Jamaica",
+                code: "JM",
+            },
+            {
+                name: "Japan",
+                code: "JP",
+            },
+            {
+                name: "Jersey",
+                code: "JE",
+            },
+            {
+                name: "Jordan",
+                code: "JO",
+            },
+            {
+                name: "Kazakhstan",
+                code: "KZ",
+            },
+            {
+                name: "Kenya",
+                code: "KE",
+            },
+            {
+                name: "Kiribati",
+                code: "KI",
+            },
+            {
+                name: "Korea, Democratic People'S Republic of",
+                code: "KP",
+            },
+            {
+                name: "Korea, Republic of",
+                code: "KR",
+            },
+            {
+                name: "Kuwait",
+                code: "KW",
+            },
+            {
+                name: "Kyrgyzstan",
+                code: "KG",
+            },
+            {
+                name: "Lao People'S Democratic Republic",
+                code: "LA",
+            },
+            {
+                name: "Latvia",
+                code: "LV",
+            },
+            {
+                name: "Lebanon",
+                code: "LB",
+            },
+            {
+                name: "Lesotho",
+                code: "LS",
+            },
+            {
+                name: "Liberia",
+                code: "LR",
+            },
+            {
+                name: "Libyan Arab Jamahiriya",
+                code: "LY",
+            },
+            {
+                name: "Liechtenstein",
+                code: "LI",
+            },
+            {
+                name: "Lithuania",
+                code: "LT",
+            },
+            {
+                name: "Luxembourg",
+                code: "LU",
+            },
+            {
+                name: "Macao",
+                code: "MO",
+            },
+            {
+                name: "Macedonia, The Former Yugoslav Republic of",
+                code: "MK",
+            },
+            {
+                name: "Madagascar",
+                code: "MG",
+            },
+            {
+                name: "Malawi",
+                code: "MW",
+            },
+            {
+                name: "Malaysia",
+                code: "MY",
+            },
+            {
+                name: "Maldives",
+                code: "MV",
+            },
+            {
+                name: "Mali",
+                code: "ML",
+            },
+            {
+                name: "Malta",
+                code: "MT",
+            },
+            {
+                name: "Marshall Islands",
+                code: "MH",
+            },
+            {
+                name: "Martinique",
+                code: "MQ",
+            },
+            {
+                name: "Mauritania",
+                code: "MR",
+            },
+            {
+                name: "Mauritius",
+                code: "MU",
+            },
+            {
+                name: "Mayotte",
+                code: "YT",
+            },
+            {
+                name: "Mexico",
+                code: "MX",
+            },
+            {
+                name: "Micronesia, Federated States of",
+                code: "FM",
+            },
+            {
+                name: "Moldova, Republic of",
+                code: "MD",
+            },
+            {
+                name: "Monaco",
+                code: "MC",
+            },
+            {
+                name: "Mongolia",
+                code: "MN",
+            },
+            {
+                name: "Montserrat",
+                code: "MS",
+            },
+            {
+                name: "Morocco",
+                code: "MA",
+            },
+            {
+                name: "Mozambique",
+                code: "MZ",
+            },
+            {
+                name: "Myanmar",
+                code: "MM",
+            },
+            {
+                name: "Namibia",
+                code: "NA",
+            },
+            {
+                name: "Nauru",
+                code: "NR",
+            },
+            {
+                name: "Nepal",
+                code: "NP",
+            },
+            {
+                name: "Netherlands",
+                code: "NL",
+            },
+            {
+                name: "Netherlands Antilles",
+                code: "AN",
+            },
+            {
+                name: "New Caledonia",
+                code: "NC",
+            },
+            {
+                name: "New Zealand",
+                code: "NZ",
+            },
+            {
+                name: "Nicaragua",
+                code: "NI",
+            },
+            {
+                name: "Niger",
+                code: "NE",
+            },
+            {
+                name: "Nigeria",
+                code: "NG",
+            },
+            {
+                name: "Niue",
+                code: "NU",
+            },
+            {
+                name: "Norfolk Island",
+                code: "NF",
+            },
+            {
+                name: "Northern Mariana Islands",
+                code: "MP",
+            },
+            {
+                name: "Norway",
+                code: "NO",
+            },
+            {
+                name: "Oman",
+                code: "OM",
+            },
+            {
+                name: "Pakistan",
+                code: "PK",
+            },
+            {
+                name: "Palau",
+                code: "PW",
+            },
+            {
+                name: "Palestinian Territory, Occupied",
+                code: "PS",
+            },
+            {
+                name: "Panama",
+                code: "PA",
+            },
+            {
+                name: "Papua New Guinea",
+                code: "PG",
+            },
+            {
+                name: "Paraguay",
+                code: "PY",
+            },
+            {
+                name: "Peru",
+                code: "PE",
+            },
+            {
+                name: "Philippines",
+                code: "PH",
+            },
+            {
+                name: "Pitcairn",
+                code: "PN",
+            },
+            {
+                name: "Poland",
+                code: "PL",
+            },
+            {
+                name: "Portugal",
+                code: "PT",
+            },
+            {
+                name: "Puerto Rico",
+                code: "PR",
+            },
+            {
+                name: "Qatar",
+                code: "QA",
+            },
+            {
+                name: "Reunion",
+                code: "RE",
+            },
+            {
+                name: "Romania",
+                code: "RO",
+            },
+            {
+                name: "Russian Federation",
+                code: "RU",
+            },
+            {
+                name: "RWANDA",
+                code: "RW",
+            },
+            {
+                name: "Saint Helena",
+                code: "SH",
+            },
+            {
+                name: "Saint Kitts and Nevis",
+                code: "KN",
+            },
+            {
+                name: "Saint Lucia",
+                code: "LC",
+            },
+            {
+                name: "Saint Pierre and Miquelon",
+                code: "PM",
+            },
+            {
+                name: "Saint Vincent and the Grenadines",
+                code: "VC",
+            },
+            {
+                name: "Samoa",
+                code: "WS",
+            },
+            {
+                name: "San Marino",
+                code: "SM",
+            },
+            {
+                name: "Sao Tome and Principe",
+                code: "ST",
+            },
+            {
+                name: "Saudi Arabia",
+                code: "SA",
+            },
+            {
+                name: "Senegal",
+                code: "SN",
+            },
+            {
+                name: "Serbia and Montenegro",
+                code: "CS",
+            },
+            {
+                name: "Seychelles",
+                code: "SC",
+            },
+            {
+                name: "Sierra Leone",
+                code: "SL",
+            },
+            {
+                name: "Singapore",
+                code: "SG",
+            },
+            {
+                name: "Slovakia",
+                code: "SK",
+            },
+            {
+                name: "Slovenia",
+                code: "SI",
+            },
+            {
+                name: "Solomon Islands",
+                code: "SB",
+            },
+            {
+                name: "Somalia",
+                code: "SO",
+            },
+            {
+                name: "South Africa",
+                code: "ZA",
+            },
+            {
+                name: "South Georgia and the South Sandwich Islands",
+                code: "GS",
+            },
+            {
+                name: "Spain",
+                code: "ES",
+            },
+            {
+                name: "Sri Lanka",
+                code: "LK",
+            },
+            {
+                name: "Sudan",
+                code: "SD",
+            },
+            {
+                name: "Suriname",
+                code: "SR",
+            },
+            {
+                name: "Svalbard and Jan Mayen",
+                code: "SJ",
+            },
+            {
+                name: "Swaziland",
+                code: "SZ",
+            },
+            {
+                name: "Sweden",
+                code: "SE",
+            },
+            {
+                name: "Switzerland",
+                code: "CH",
+            },
+            {
+                name: "Syrian Arab Republic",
+                code: "SY",
+            },
+            {
+                name: "Taiwan, Province of China",
+                code: "TW",
+            },
+            {
+                name: "Tajikistan",
+                code: "TJ",
+            },
+            {
+                name: "Tanzania, United Republic of",
+                code: "TZ",
+            },
+            {
+                name: "Thailand",
+                code: "TH",
+            },
+            {
+                name: "Timor-Leste",
+                code: "TL",
+            },
+            {
+                name: "Togo",
+                code: "TG",
+            },
+            {
+                name: "Tokelau",
+                code: "TK",
+            },
+            {
+                name: "Tonga",
+                code: "TO",
+            },
+            {
+                name: "Trinidad and Tobago",
+                code: "TT",
+            },
+            {
+                name: "Tunisia",
+                code: "TN",
+            },
+            {
+                name: "Turkey",
+                code: "TR",
+            },
+            {
+                name: "Turkmenistan",
+                code: "TM",
+            },
+            {
+                name: "Turks and Caicos Islands",
+                code: "TC",
+            },
+            {
+                name: "Tuvalu",
+                code: "TV",
+            },
+            {
+                name: "Uganda",
+                code: "UG",
+            },
+            {
+                name: "Ukraine",
+                code: "UA",
+            },
+            {
+                name: "United Arab Emirates",
+                code: "AE",
+            },
+            {
+                name: "United Kingdom",
+                code: "GB",
+            },
+            {
+                name: "United States",
+                code: "US",
+            },
+            {
+                name: "United States Minor Outlying Islands",
+                code: "UM",
+            },
+            {
+                name: "Uruguay",
+                code: "UY",
+            },
+            {
+                name: "Uzbekistan",
+                code: "UZ",
+            },
+            {
+                name: "Vanuatu",
+                code: "VU",
+            },
+            {
+                name: "Venezuela",
+                code: "VE",
+            },
+            {
+                name: "Viet Nam",
+                code: "VN",
+            },
+            {
+                name: "Virgin Islands, British",
+                code: "VG",
+            },
+            {
+                name: "Virgin Islands, U.S.",
+                code: "VI",
+            },
+            {
+                name: "Wallis and Futuna",
+                code: "WF",
+            },
+            {
+                name: "Western Sahara",
+                code: "EH",
+            },
+            {
+                name: "Yemen",
+                code: "YE",
+            },
+            {
+                name: "Zambia",
+                code: "ZM",
+            },
+            {
+                name: "Zimbabwe",
+                code: "ZW",
+            },
+        ];
+
+        var country = document.getElementById("country");
+        window.onload = () => {
+            countryData.forEach((c) => {
+
+                const option = document.createElement("option");
+                option.value = c.name;
+                option.textContent = c.name;
+                if (c.name == '<?php echo $row['country'] ?>') {
+                    option.setAttribute("selected", "selected");
+                }
+                country.appendChild(option);
+            });
+        };
+    </script>
 </body>
 
 </html>

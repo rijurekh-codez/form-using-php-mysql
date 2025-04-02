@@ -1,0 +1,19 @@
+#popup {
+  background-color: beige;
+  padding: 10px;
+  padding-top: 2px !important;
+  border-radius: 8px;
+  display: none;
+  left: 654px;
+  position: absolute;
+  top: 228px;
+  outline: 1px solid rgb(207, 207, 207);
+  box-shadow: 2px 2px 5px;
+}
+
+#closemodal {
+  cursor: pointer;
+  color: black !important;
+  font-weight: 600;
+  font-size: 15px;
+}

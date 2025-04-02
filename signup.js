@@ -138,6 +138,9 @@ document.getElementById("street").addEventListener("input", function (event) {
     errorElement.style.display = "block";
     errorElement.textContent = "street is required";
     isValid = false;
+  } else {
+    errorElement.style.display = "block";
+    isValid = true;
   }
 });
 

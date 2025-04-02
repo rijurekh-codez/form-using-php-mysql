@@ -25,7 +25,7 @@ $row = $result->fetch_assoc();
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>Dashboard</title>
     <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
 </head>
 
@@ -111,9 +111,9 @@ $row = $result->fetch_assoc();
                         <path d="M5 7h7m-2 -2v2a5 8 0 0 1 -5 8m1 -4a7 4 0 0 0 6.7 4" />
                         <path d="M11 19l4 -9l4 9m-.9 -2h-6.2" />
                     </svg>
-                    <p class="text-gray-600">Language</p>
+                    <p class="text-gray-600">Languages</p>
                 </div>
-                <p class="mb-3 text-[17px] font-small"><?php echo $row['language'] ?></p>
+                <p class="mb-3 text-[17px] font-small"><?php if (isset($row['languages'])) print_r($row['languages']) ?></p>
             </div>
 
 

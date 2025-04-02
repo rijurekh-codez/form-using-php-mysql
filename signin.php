@@ -21,7 +21,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
   if ($result->num_rows == 1) {
     $row = $result->fetch_assoc();
 
-    if (password_verify($password, $row['password'])) {
+    if ($password == $row['password']) {
       $_SESSION['user'] = $username;
       header('Location: dashboard.php');
       exit;
@@ -47,7 +47,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
   <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
 </head>
 
-<body class="h-screen bg-green-100 text-center pt-35">
+<body class="h-screen bg-green-100 pt-35">
   <div class="flex bg-green-100 justify-center items-center">
 
     <form id="myform" class="bg-indigo-200 rounded-lg p-4 w-100" action="signin.php" method="post">
@@ -68,6 +68,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
       <?php if (isset($error_message)) { ?>
         <p style="color:red; margin-top:10px;"><?php echo $error_message; ?></p>
       <?php } ?>
+      <p class="mt-2">Don't have an account ? <a href="signup.php" class="font-bold">Sign Up</a></p>
     </form>
   </div>
 
@@ -91,15 +92,10 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
       errorElement.textContent = "Username is required";
       isValid = false;
     } else {
-      var usernameRegex = /^[A-Za-z\s]+$/;
-      if (!username.match(usernameRegex)) {
-        errorElement.style.display = "block";
-        errorElement.textContent = "Username can only contain alphabetic characters and spaces.";
-        isValid = false;
-      } else {
-        errorElement.style.display = "none";
-        isValid = true;
-      }
+
+      errorElement.style.display = "none";
+      isValid = true;
+
     }
   });
 
