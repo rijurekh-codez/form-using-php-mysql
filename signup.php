@@ -76,7 +76,7 @@
         <label for="image" class=" mb-2 text-md ">Upload an image:</label>
         <input type="file" class=" text-sm border border-gray-300 rounded-lg cursor-pointer focus:outline-none light:bg-gray-700 dark:border-gray-500 " name="image" id="image" accept="image/*">
         <p id="image-err" style="color:red; display:none;"></p>
-
+        <img id="show" class="w-30 h-30" src="" alt="" style="display:none">
 
         <h4 class="mt-5">Address:</h4>
         <div class="grid xs:grid-cols-12 md:grid-cols-2 lg:grid-cols-3 gap-2 mb-4">
@@ -381,15 +381,22 @@
 
     document.getElementById("image").addEventListener("input", function(event) {
       var imgField = document.getElementById("image").value;
+      var imgPath = document.getElementById("image").files[0].name;
+      var imgShow = document.getElementById("show");
+      var errorElement = document.getElementById("image-err");
       if (imgField != "") {
         var imgerr = document.getElementById("image-err");
         imgerr.style.display = "none";
         isValid = true;
+        imgShow.style.display = "block";
+
+        imgShow.src = imgPath;
       }
 
-      if (street == "") {
+      if (imgField == "") {
+        imgShow.style.display = "none";
         errorElement.style.display = "block";
-        errorElement.textContent = "street is required";
+        errorElement.textContent = "image  is required";
         isValid = false;
       } else {
         errorElement.style.display = "none";
