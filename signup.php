@@ -7,7 +7,51 @@
   <title>Sign Up</title>
   <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
   <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.2.3/css/bootstrap.min.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.6/cropper.css" />
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.2.3/js/bootstrap.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.6/cropper.js"></script>
+
+
 </head>
+
+<style type="text/css">
+  img {
+    display: block;
+    max-width: 100%;
+  }
+
+  .preview {
+    text-align: center;
+    overflow: hidden;
+    width: 160px;
+    height: 160px;
+    margin: 10px;
+    border: 1px solid red;
+  }
+
+  input {
+    margin-top: 40px;
+  }
+
+  .section {
+    margin-top: 150px;
+    background: #fff;
+    padding: 50px 30px;
+  }
+
+  .modal-lg {
+    max-width: 1000px !important;
+  }
+
+  .error {
+    color: red;
+  }
+</style>
+
+
 
 <body style="display: flex; justify-content: center; align-items:center ;flex-direction: column;" class=" sm:h-full">
 
@@ -15,39 +59,39 @@
     <div class="bg-indigo-200 lg:rounded-lg ">
       <div class="p-4">
         <h1 class="text-3xl font-medium">Create Your Account</h1>
-        <p class="text-[15px] mb-4">Create Your Account</p>
+        <p class="text-[15px]">Create Your Account</p>
       </div>
-      <form class="p-4 2xl:w-250 lg:w-200 md:w-auto" action="signup.php" method="post" id="myform" enctype="multipart/form-data">
+      <form class="px-4 2xl:w-250 lg:w-200 md:w-auto" action="signup.php" method="post" id="myform" enctype="multipart/form-data">
 
         <!-- Personal details -->
         <h4>Personal Details:</h4>
-        <div class="grid xs:grid-cols-12 md:grid-cols-2 lg:grid-cols-2 gap-2 mb-4">
-          <div class="mb-2 pr-4">
+        <div class="grid xs:grid-cols-12 md:grid-cols-2 lg:grid-cols-3">
+          <div class=" pr-4">
             <input type="text" name="firstname" id="firstname" class="bg-gray-50 border border-gray-300 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5" placeholder=" first name" />
             <p id="firstname-err" style="color:red; display:none;"></p>
           </div>
-          <div class="mb-2 pr-4">
+          <div class=" pr-4">
             <input type="text" name="lastname" id="lastname" class="bg-gray-50 border border-gray-300 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5" placeholder=" last name" />
             <p id="lastname-err" style="color:red; display:none;"></p>
           </div>
-          <div class="mb-2 pr-4">
+          <div class=" pr-4">
             <input type="text" name="username" id="username" class="bg-gray-50 border border-gray-300 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5" placeholder=" username" />
             <p id="username-err" style="color:red; display:none;"></p>
           </div>
-          <div class="mb-2 pr-4">
+          <div class=" pr-4">
             <input type="email" id="email" name="email" class="bg-gray-50 border border-gray-300 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5" placeholder=" email" />
             <p id="email-err" style="color:red; display:none;"></p>
           </div>
-          <div class="mb-2 pr-4">
+          <div class=" pr-4">
             <input type="text" name="phoneno" id="phoneno" class="bg-gray-50 border border-gray-300 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5" placeholder=" phone number" />
             <p id="phoneno-err" style="color:red; display:none;"></p>
           </div>
-          <div class="mb-2 pr-4">
+          <div class=" pr-4">
             <input type="text" name="add_phoneno" id="add_phoneno" class="bg-gray-50 border border-gray-300 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5" placeholder="Additional phone number" />
             <p id="add_phoneno-err" style="color:red; display:none;"></p>
           </div>
           <!-- Password -->
-          <div class="mb-2 pr-4">
+          <div class=" pr-4">
             <div id="popup">
               <div>
                 <li style="color: red; font-size:15px" id="smallp">should contain atleast one small alphabet</li>
@@ -73,44 +117,86 @@
           </div>
         </div>
 
-        <label for="image" class=" mb-2 text-md ">Upload an image:</label>
+        <!-- <label for="image" class=" mb-2 text-md ">Upload an image:</label>
         <input type="file" class=" text-sm border border-gray-300 rounded-lg cursor-pointer focus:outline-none light:bg-gray-700 dark:border-gray-500 " name="image" id="image" accept="image/*">
         <p id="image-err" style="color:red; display:none;"></p>
-        <img id="show" class="w-30 h-30" src="" alt="" style="display:none">
+        <img id="show" class="w-30 h-30" src="" alt="" style="display:none"> -->
 
-        <h4 class="mt-5">Address:</h4>
-        <div class="grid xs:grid-cols-12 md:grid-cols-2 lg:grid-cols-3 gap-2 mb-4">
+
+        <label for="image" class="text-md ">Upload an image:</label>
+        <input type="file" name="image" onclick="this.value=null;" id="dp" class="image form-control mt-2 " accept=".jpg, .jpeg, .png, .webp">
+        <p class="error" id="fileError"></p>
+        <input type="hidden" name="image_base64" id="imageBase64">
+        <span class="error" id="base64Error"></span>
+        <img src="" style="width: 200px;display: none;" class="show-image" id="show">
+
+
+
+        <div class="modal fade" id="modal" tabindex="-1" role="dialog" aria-labelledby="modalLabel" aria-hidden="true">
+          <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content">
+
+              <div class="modal-header">
+                <h1 class="modal-title fs-5" id="exampleModalLabel">New message</h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+              </div>
+
+
+              <div class="modal-body">
+                <div class="img-container">
+                  <div class="row">
+                    <div class="col-md-8">
+                      <img id="image" src="https://avatars0.githubusercontent.com/u/3456749">
+                    </div>
+                    <div class="col-md-4">
+                      <div class="preview"></div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" id="doNotCrop">Do not crop</button>
+                <button type="button" class="btn btn-primary" id="crop">Crop</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <h4 class="mt-4">Address:</h4>
+        <div class="grid xs:grid-cols-12 md:grid-cols-2 lg:grid-cols-2 ">
           <!-- Address -->
-          <div class="mb-2 pr-4">
+          <div class=" pr-4">
             <input type="text" name="street" id="street" class="bg-gray-50 border border-gray-300 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5" placeholder=" street" />
             <p id="street-err" style="color:red; display:none;"></p>
           </div>
-          <div class="mb-2 pr-4">
+          <div class=" pr-4">
             <input type="text" name="city" id="city" class="bg-gray-50 border border-gray-300 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5" placeholder=" City" />
             <p id="city-err" style="color:red; display:none;"></p>
           </div>
 
-          <div class="mb-2 pr-4">
-            <select name="country" id="country" class="block w-full p-2.5 text-sm text-gray-900 border border-gray-300 rounded-lg bg-gray-50">
-              <option selected>Select country</option>
-            </select>
-            <p id="country-err" style="color:red; display:none;"></p>
+          <div class="pr-4">
+            <div>
+              <select name="country" id="country" class="block w-full p-2.5 text-sm text-gray-900 border border-gray-300 rounded-lg bg-gray-50 mt-4">
+                <option selected>Select country</option>
+              </select>
+              <p id="country-err" style="color:red; display:none;"></p>
+            </div>
           </div>
 
-          <div class="mb-2 pr-4" id="state-container">
-            <input type="text" name="state" id="state" class="bg-gray-50 border border-gray-300 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5" placeholder=" State" />
+          <div class=" pr-4" id="state-container">
+            <input type="text" name="state" id="state" class="bg-gray-50 border border-gray-300 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 mt-4" placeholder=" State" />
             <p id="state-err" style="color:red; display:none;"></p>
           </div>
 
           <div class="mb-2 pr-4">
-            <input type="text" name="zipcode" id="zipcode" class="bg-gray-50 border border-gray-300 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5" placeholder=" zip code" />
+            <input type="text" name="zipcode" id="zipcode" class="bg-gray-50 border border-gray-300 text-sm rounded-lg focus:ring-blue-500 mt-4 focus:border-blue-500 block w-full p-2.5" placeholder=" zip code" />
             <p id="zipcode-err" style="color:red; display:none;"></p>
           </div>
         </div>
 
-        <h4>Others:</h4>
+        <h4 class="mt-4"> Others:</h4>
 
-        <div class="my-2 pr-4">
+        <div class="mb-2 pr-4">
           <span>Gender: </span>
           <input type="radio" id="male" name="gender" value="Male">
           <label for="male">Male</label>
@@ -122,20 +208,20 @@
         <div class="grid xs:grid-cols-12 md:grid-cols-2 lg:grid-cols-4 gap-2">
           <!-- Language -->
 
-          <div class="mb-2 pr-4">
-            <p>Languages: </p>
-            <input type="checkbox" name="languages[]" value="English" class="inline"> English <br>
-            <input type="checkbox" name="languages[]" value="Hindi" class="inline"> Hindi <br>
-            <input type="checkbox" name="languages[]" value="Bengali"> Bengali <br>
+          <div class="pr-4">
+            <p class="m-0">Languages: </p>
+            <input type="checkbox" name="languages[]" value="English" class="inline m-0"> English <br>
+            <input type="checkbox" name="languages[]" value="Hindi" class="inline m-0"> Hindi <br>
+            <input type="checkbox" name="languages[]" value="Bengali" class="m-0"> Bengali <br>
 
             <p id="language-err" style="color:red; display:none;"></p>
           </div>
         </div>
 
         <br>
-        <button type="submit" class="bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center text-white">Sign Up</button>
+        <button type="submit" class="bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center text-white my-3">Sign Up</button>
       </form>
-      <p class="pl-4">Already have an account ? <a href="signin.php" class="font-bold">Sign in</a></p>
+      <p class="pl-4 pb-4">Already have an account ? <a href="signin.php" class="font-bold">Sign in</a></p>
     </div>
   </div>
 
@@ -144,6 +230,101 @@
     if (window.history.replaceState) {
       window.history.replaceState(null, null, window.location.href);
     }
+
+    var $modal = $('#modal');
+    var image = document.getElementById('image');
+    var cropper;
+
+
+
+    $("body").on("change", ".image", function(e) {
+      var files = e.target.files;
+      console.log(files);
+
+      var done = function(url) {
+        image.src = url;
+        $modal.modal('show');
+      };
+
+
+      if (files.length == 0) {
+        $(".show-image").hide();
+      }
+      var reader;
+      var file;
+      var url;
+
+      if (files && files.length > 0) {
+        file = files[0];
+
+        var allowedExtensions = /(\.jpg|\.jpeg|\.png|\.webp)$/i;
+        if (!allowedExtensions.exec(file.name)) {
+          $('#fileError').text('Only JPG, JPEG, PNG, and WebP files are allowed.');
+          return;
+        } else {
+          $('#fileError').text('');
+        }
+
+        if (URL) {
+          done(URL.createObjectURL(file));
+        } else if (FileReader) {
+          reader = new FileReader();
+          reader.onload = function(e) {
+            done(reader.result);
+          };
+          reader.readAsDataURL(file);
+        }
+      }
+    });
+
+    $modal.on('shown.bs.modal', function() {
+      cropper = new Cropper(image, {
+        aspectRatio: 1,
+        viewMode: 3,
+        preview: '.preview'
+      });
+    }).on('hidden.bs.modal', function() {
+      cropper.destroy();
+      cropper = null;
+    });
+
+    $("#crop").click(function() {
+      canvas = cropper.getCroppedCanvas({
+        width: 160,
+        height: 160,
+      });
+
+      canvas.toBlob(function(blob) {
+        url = URL.createObjectURL(blob);
+        var reader = new FileReader();
+        reader.readAsDataURL(blob);
+        reader.onloadend = function() {
+          var base64data = reader.result;
+          $("#imageBase64").val(base64data);
+          $(".show-image").show();
+          $(".show-image").attr("src", base64data);
+          $("#modal").modal('toggle');
+        }
+      });
+    });
+
+    $("#doNotCrop").click(function() {
+      var input = $(".image")[0];
+      var file = input.files[0];
+      var reader = new FileReader();
+
+      reader.onloadend = function() {
+        var base64data = reader.result;
+        $("#imageBase64").val(base64data);
+        $(".show-image").show();
+        $(".show-image").attr("src", base64data);
+        $("#modal").modal('toggle');
+      };
+
+      reader.readAsDataURL(file);
+    });
+
+
     var isValid = true;
 
     document
@@ -380,23 +561,20 @@
       });
 
     document.getElementById("image").addEventListener("input", function(event) {
-      var imgField = document.getElementById("image").value;
-      var imgPath = document.getElementById("image").files[0].name;
-      var imgShow = document.getElementById("show");
-      var errorElement = document.getElementById("image-err");
+      var imgField = document.getElementById("dp").value;
+      var errorElement = document.getElementById("fileError");
       if (imgField != "") {
-        var imgerr = document.getElementById("image-err");
+        var imgerr = document.getElementById("fileError");
         imgerr.style.display = "none";
         isValid = true;
-        imgShow.style.display = "block";
-
-        imgShow.src = imgPath;
+        var show = document.getElementById("show");
+        show.style.display = "none";
       }
 
       if (imgField == "") {
         imgShow.style.display = "none";
         errorElement.style.display = "block";
-        errorElement.textContent = "image  is required";
+        errorElement.textContent = "image is required";
         isValid = false;
       } else {
         errorElement.style.display = "none";
@@ -502,6 +680,11 @@
           id: "lastname",
           errorId: "lastname-err",
           errorMsg: "Lastname is required",
+        },
+        {
+          id: "dp",
+          errorId: "fileError",
+          errorMsg: "Image is required",
         },
         {
           id: "username",
@@ -1656,7 +1839,7 @@
       const select = document.createElement("select");
       select.name = "state";
       select.className =
-        "bg-gray-50 border border-gray-300 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5";
+        "bg-gray-50 border border-gray-300 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 mt-4 block w-full p-2.5";
 
       statesIndia.forEach((state) => {
         const option = document.createElement("option");
@@ -1673,7 +1856,7 @@
       const stateContainer = document.getElementById("state-container");
       stateContainer.innerHTML = `
     <div>
-      <input type="text" id="state" name="state" class="bg-gray-50 border border-gray-300 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5" placeholder="Enter State" />
+      <input type="text" id="state" name="state" class="bg-gray-50 border border-gray-300 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 mt-4" placeholder="Enter State" />
       <p id="state-err" style="color:red; display:none;"></p>
     </div>
   `;
@@ -1706,31 +1889,41 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
   $languages = $_POST['languages'];
 
   $all_languages = implode(",", $languages);
-  // image
-  $file_name = $_FILES['image']['name'];
-  $tempname =  $_FILES['image']['tmp_name'];
-  $folder = 'Uploads/' . $file_name;
 
-  if (move_uploaded_file($tempname, $folder)) {
-    // echo "file uploaded";
+  // image
+  $imageData = $_POST['image_base64'];
+  if (!preg_match('/^data:image\/(png|jpeg);base64,/', $imageData, $imageType)) {
+    die('Error: Only PNG or JPG images are allowed.');
   }
+
+  $imageType = $imageType[1];
+
+  $binaryImageData = base64_decode(preg_replace('#^data:image/\w+;base64,#i', '', $imageData));
+
+  if (empty($binaryImageData)) {
+    die('Error: Invalid base64 image data.');
+  }
+  $imageName =  'dp.' . $imageType;
+  $uploadDirectory = 'Uploads/';
+  if (!is_dir($uploadDirectory)) {
+    mkdir($uploadDirectory, 0755, true);
+  }
+  $filePath = $uploadDirectory . $imageName;
+  file_put_contents($filePath, $binaryImageData);
   if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
     echo "Invalid email format.";
     exit;
   }
-
   if ($password !== $confirmpassword) {
     echo "Passwords do not match!";
     exit;
   }
-
   if (strlen($password) < 10) {
     echo "Password must be at least 10 characters long.";
     exit;
   }
-
   $sql = "INSERT INTO Persons (password, username, firstname, lastname, phoneno, gender, street, city, state, country, zipcode, languages, email,image_path,add_phoneno)
-          VALUES ('$password', '$username', '$firstname', '$lastname', '$phoneno', '$gender', '$street', '$city', '$state', '$country', '$zipcode', '$all_languages', '$email','$file_name','$add_phoneno')";
+          VALUES ('$password', '$username', '$firstname', '$lastname', '$phoneno', '$gender', '$street', '$city', '$state', '$country', '$zipcode', '$all_languages', '$email','$imageName','$add_phoneno')";
 
   if ($conn->query($sql) === TRUE) {
     echo '<p style="color: green;">Account Created Successfully</p>';
