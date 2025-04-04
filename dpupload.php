@@ -61,10 +61,40 @@
                     <input type="hidden" name="image_base64" id="imageBase64">
                     <span class="error" id="base64Error"></span>
                     <div style="display: flex;" id="imagePreviews"></div>
+                    <img src="" style="width: 200px;display: none;" class="show-image" id="show">
 
                     <br />
                     <button type="submit">Upload</button>
                 </form>
+            </div>
+            <div class="modal fade" id="modal" tabindex="-1" role="dialog" aria-labelledby="modalLabel" aria-hidden="true">
+                <div class="modal-dialog modal-lg" role="document">
+                    <div class="modal-content">
+
+                        <div class="modal-header">
+                            <h1 class="modal-title fs-5" id="exampleModalLabel">New message</h1>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+
+
+                        <div class="modal-body">
+                            <div class="img-container">
+                                <div class="row">
+                                    <div class="col-md-8">
+                                        <img id="image" src="https://avatars0.githubusercontent.com/u/3456749">
+                                    </div>
+                                    <div class="col-md-4">
+                                        <div class="preview"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" id="doNotCrop">Do not crop</button>
+                            <button type="button" class="btn btn-primary" id="crop">Crop</button>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
@@ -86,9 +116,15 @@
             var reader = new FileReader();
 
             reader.onload = function(e) {
+
                 var img = $('<img>').attr('src', e.target.result).css({
                     'width': '100px',
-                    'margin-right': '10px'
+                    'aspect-ratio': 1,
+                    'margin-right': "8px",
+                    'object-fit': 'contain'
+                }).click(function() {
+                    console.log(file);
+
                 });
                 previewContainer.append(img);
             };

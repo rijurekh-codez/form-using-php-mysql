@@ -117,12 +117,6 @@
           </div>
         </div>
 
-        <!-- <label for="image" class=" mb-2 text-md ">Upload an image:</label>
-        <input type="file" class=" text-sm border border-gray-300 rounded-lg cursor-pointer focus:outline-none light:bg-gray-700 dark:border-gray-500 " name="image" id="image" accept="image/*">
-        <p id="image-err" style="color:red; display:none;"></p>
-        <img id="show" class="w-30 h-30" src="" alt="" style="display:none"> -->
-
-
         <label for="image" class="text-md ">Upload an image:</label>
         <input type="file" name="image" onclick="this.value=null;" id="dp" class="image form-control mt-2 " accept=".jpg, .jpeg, .png, .webp">
         <p class="error" id="fileError"></p>
@@ -233,6 +227,8 @@
 
     var $modal = $('#modal');
     var image = document.getElementById('image');
+    console.log(image);
+
     var cropper;
 
 
@@ -303,6 +299,8 @@
           $("#imageBase64").val(base64data);
           $(".show-image").show();
           $(".show-image").attr("src", base64data);
+          console.log($(".show-image"));
+
           $("#modal").modal('toggle');
         }
       });
