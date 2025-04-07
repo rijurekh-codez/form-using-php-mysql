@@ -12,21 +12,22 @@
 
   <style>
     #preview img {
-      max-width: 130px;
+      max-width: 110px;
       margin: 10px 0 10px 0;
       border: 1px solid #ccc;
       border-radius: 6px;
     }
 
     .crop-container {
-      max-width: 400px;
+      max-width: 300px;
       display: none;
       margin-bottom: 15px;
+      margin-top: 10px;
     }
 
     .crop-container img {
       width: 100%;
-      height: auto;
+      height: 100%;
       display: block;
       border: 1px solid #ccc;
       border-radius: 6px;
@@ -34,9 +35,12 @@
 
     #cropBtn {
       display: none;
-      padding: 10px 20px;
+      padding: 4px 15px;
       margin-bottom: 20px;
       cursor: pointer;
+      background-color: black;
+      color: white;
+      border-radius: 10px;
     }
 
     button {
@@ -54,7 +58,6 @@
 
 
 <body style="display: flex; justify-content: center; align-items:center ;flex-direction: column;" class=" sm:h-full">
-
   <div>
     <div class="bg-indigo-200 lg:rounded-lg ">
       <div class="p-4">
@@ -123,14 +126,12 @@
         <p class="error" id="fileError"></p>
 
 
-
-
         <div class="crop-container" id="cropWrapper">
           <img id="currentImage">
         </div>
         <button id="cropBtn" type="button">Crop</button>
 
-        <div id="preview" class="grid xs:grid-cols-12 md:grid-cols-2 lg:grid-cols-4 w-[80%]"></div>
+        <div id="preview" class="grid xs:grid-cols-12 md:grid-cols-2 lg:grid-cols-5 w-[90%]"></div>
         <input type="hidden" name="cropped_images" id="croppedImagesData">
 
         <h4 class="mt-4">Address:</h4>
@@ -203,7 +204,7 @@
     }
 
     let files = [];
-    let currentFileIndex = 0;
+    let idx = 0;
     let cropper;
     let croppedImages = [];
 
@@ -214,15 +215,16 @@
     const preview = document.getElementById("preview");
     const croppedImagesData = document.getElementById("croppedImagesData");
 
+
     imageInput.addEventListener("change", function(e) {
+      preview.innerHTML = "";
+
       files = Array.from(e.target.files);
-      currentFileIndex = 0;
+      idx = 0;
       croppedImages = [];
 
-      console.log(files);
-
       if (files.length > 0) {
-        showImageForCropping(files[currentFileIndex]);
+        showImageForCropping(files[idx]);
       }
     });
 
@@ -247,6 +249,7 @@
 
     cropBtn.addEventListener("click", function() {
       const canvas = cropper.getCroppedCanvas();
+
       const croppedDataUrl = canvas.toDataURL('image/jpeg');
       croppedImages.push(croppedDataUrl);
 
@@ -254,9 +257,9 @@
       img.src = croppedDataUrl;
       preview.appendChild(img);
 
-      currentFileIndex++;
-      if (currentFileIndex < files.length) {
-        showImageForCropping(files[currentFileIndex]);
+      idx++;
+      if (idx < files.length) {
+        showImageForCropping(files[idx]);
       } else {
         cropWrapper.style.display = "none";
         cropBtn.style.display = "none";
