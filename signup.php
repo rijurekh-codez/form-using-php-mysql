@@ -9,8 +9,27 @@
   <link rel="stylesheet" href="style.css">
   <link href="https://unpkg.com/cropperjs@1.5.13/dist/cropper.min.css" rel="stylesheet">
   <script src="https://unpkg.com/cropperjs@1.5.13/dist/cropper.min.js"></script>
+  <!-- Include Toastify CSS -->
+  <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css">
+
+  <!-- Include Toastify JS -->
+  <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
 
   <style>
+    #box {
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      z-index: 1;
+      width: 600px;
+      height: 480px;
+      overflow: auto;
+      background-color: #444;
+      display: none;
+      border-radius: 10px;
+    }
+
     #preview img {
       max-width: 110px;
       margin: 10px 0 10px 0;
@@ -19,15 +38,19 @@
     }
 
     .crop-container {
-      max-width: 300px;
+      width: 100%;
+      max-height: 400px;
       display: none;
       margin-bottom: 15px;
       margin-top: 10px;
+      justify-content: center;
+      align-items: center;
+      flex-direction: column;
     }
 
     .crop-container img {
-      width: 100%;
-      height: 100%;
+      max-width: 100%;
+      max-height: 100%;
       display: block;
       border: 1px solid #ccc;
       border-radius: 6px;
@@ -40,7 +63,7 @@
       cursor: pointer;
       background-color: black;
       color: white;
-      border-radius: 10px;
+
     }
 
     button {
@@ -56,9 +79,15 @@
 </head>
 
 
-
 <body style="display: flex; justify-content: center; align-items:center ;flex-direction: column;" class=" sm:h-full">
-  <div>
+
+  <div id="box">
+    <div class="crop-container" id="cropWrapper">
+      <img id="currentImage">
+    </div>
+    <button id="cropBtn" type="button">Crop</button>
+  </div>
+  <div id="main">
     <div class="bg-indigo-200 lg:rounded-lg ">
       <div class="p-4">
         <h1 class="text-3xl font-medium">Create Your Account</h1>
@@ -97,10 +126,10 @@
           <div class=" pr-4">
             <div id="popup">
               <div>
-                <li style="color: red; font-size:15px" id="smallp">should contain atleast one small alphabet</li>
-                <li style="color: red; font-size:15px" id="capp">should contain atleast one cappital alphabet</li>
-                <li style="color: red; font-size:15px" id="digp">should contain atleast one number</li>
-                <li style="color: red; font-size:15px" id="specp">should contain atleast one special symbol</li>
+                <li style="color: red; font-size:15px" id="smallp">Should contain atleast one small alphabet</li>
+                <li style="color: red; font-size:15px" id="capp">Should contain atleast one cappital alphabet</li>
+                <li style="color: red; font-size:15px" id="digp">Should contain atleast one number</li>
+                <li style="color: red; font-size:15px" id="specp">Should contain atleast one special symbol</li>
               </div>
               <p id="closemodal">&#x2715</p>
             </div>
@@ -126,10 +155,10 @@
         <p class="error" id="fileError"></p>
 
 
-        <div class="crop-container" id="cropWrapper">
+        <!-- <div class="crop-container" id="cropWrapper">
           <img id="currentImage">
         </div>
-        <button id="cropBtn" type="button">Crop</button>
+        <button id="cropBtn" type="button">Crop</button> -->
 
         <div id="preview" class="grid xs:grid-cols-12 md:grid-cols-2 lg:grid-cols-5 w-[90%]"></div>
         <input type="hidden" name="cropped_images" id="croppedImagesData">
@@ -177,10 +206,10 @@
           <p id="gender-err" style="color:red; display:none;"></p>
         </div>
 
-        <div class="grid xs:grid-cols-12 md:grid-cols-2 lg:grid-cols-4 gap-2">
+        <div>
           <!-- Language -->
 
-          <div class="pr-4">
+          <div class="pr-4 ">
             <p class="m-0">Languages: </p>
             <input type="checkbox" name="languages[]" value="English" class="inline m-0"> English <br>
             <input type="checkbox" name="languages[]" value="Hindi" class="inline m-0"> Hindi <br>
@@ -191,7 +220,7 @@
         </div>
 
         <br>
-        <button type="submit" class="bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center text-white my-3">Sign Up</button>
+        <button type=" submit" class="bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center text-white my-3">Sign Up</button>
       </form>
       <p class="pl-4 pb-4">Already have an account ? <a href="signin.php" class="font-bold">Sign in</a></p>
     </div>
@@ -209,15 +238,21 @@
     let croppedImages = [];
 
     const imageInput = document.getElementById("imageInput");
+    const box = document.getElementById("box");
     const cropWrapper = document.getElementById("cropWrapper");
     const currentImage = document.getElementById("currentImage");
     const cropBtn = document.getElementById("cropBtn");
     const preview = document.getElementById("preview");
     const croppedImagesData = document.getElementById("croppedImagesData");
+    const main = document.getElementById("main");
 
 
     imageInput.addEventListener("change", function(e) {
+      box.style.display = "block";
       preview.innerHTML = "";
+      main.style.opacity = 0.3;
+      main.style.backdropFilter = "blur(10px)";
+
 
       files = Array.from(e.target.files);
       idx = 0;
@@ -263,6 +298,9 @@
       } else {
         cropWrapper.style.display = "none";
         cropBtn.style.display = "none";
+        box.style.display = "none";
+        main.style.opacity = 1;
+        main.style.backdropFilter = "blur(0px)";
         if (cropper) cropper.destroy();
         croppedImagesData.value = JSON.stringify(croppedImages);
       }
@@ -278,7 +316,7 @@
 
         if (firstname == "") {
           errorElement.style.display = "block";
-          errorElement.textContent = "firstname is required";
+          errorElement.textContent = "Firstname is required";
           isValid = false;
         } else {
           var regex = /^[A-Za-z\s]+$/;
@@ -300,7 +338,7 @@
 
       if (lastname == "") {
         errorElement.style.display = "block";
-        errorElement.textContent = "lastname is required";
+        errorElement.textContent = "Lastname is required";
         isValid = false;
       } else {
         var regex = /^[A-Za-z\s]+$/;
@@ -569,7 +607,7 @@
       } else {
         if (/[^0-9]/.test(zipcode)) {
           errorElement.style.display = "block";
-          errorElement.textContent = "zipcode should only contain digits.";
+          errorElement.textContent = "Zipcode should only contain digits.";
           isValid = false;
         } else {
           errorElement.style.display = "none";
@@ -611,6 +649,37 @@
         }
       }
     });
+    document.querySelector('input[name="gender"]').addEventListener("input", function(event) {
+      var gender = document.querySelector('input[name="gender"]:checked');
+      var errorElement = document.getElementById("gender-err");
+      if (gender == "") {
+        errorElement.style.display = "block";
+        errorElement.textContent = "gender is required";
+        isValid = false;
+      } else {
+        errorElement.style.display = "none";
+        isValid = true;
+      }
+    });
+    document.querySelector('input[name="languages[]"]').addEventListener("input", function(event) {
+      const languages = [];
+      var checkboxes = document.querySelectorAll("input[type=checkbox]:checked");
+
+      for (var i = 0; i < checkboxes.length; i++) {
+        languages.push(checkboxes[i].value);
+      }
+
+      if (languages.length == 0) {
+        var languageErrorElement = document.getElementById("language-err");
+        languageErrorElement.style.display = "block";
+        languageErrorElement.textContent = "Please select atleast  language.";
+        isValid = false;
+      } else {
+        document.getElementById("language-err").style.display = "none";
+      }
+    });
+
+
 
     function validateForm(event) {
       var fields = [{
@@ -697,6 +766,26 @@
         imgerr.textContent = "Image is Required";
         isValid = false;
       }
+
+      var confirmpassword = document
+        .getElementById("confirmpassword")
+        .value.trim();
+      var errorElement = document.getElementById("conpassword-err");
+      var password = document.getElementById("password").value.trim();
+
+      if (confirmpassword == "") {
+        errorElement.style.display = "block";
+        errorElement.textContent = "Please confirm your password";
+        isValid = false;
+      } else if (password != confirmpassword) {
+        errorElement.style.display = "block";
+        errorElement.textContent = "Passwords do not match!";
+        isValid = false;
+      } else {
+        errorElement.style.display = "none";
+        isValid = true;
+      }
+
 
       var gender = document.querySelector('input[name="gender"]:checked');
       if (!gender) {
@@ -1886,6 +1975,61 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
   }
   if (strlen($password) < 10) {
     echo "Password must be at least 10 characters long.";
+    exit;
+  }
+
+  $isValid = true;
+
+  $searchUsername = "SELECT * FROM Persons WHERE username = '$username'";
+  $stmt = $conn->prepare($searchUsername);
+  $stmt->execute();
+  $result = $stmt->get_result();
+
+  if ($result->num_rows == 1) {
+    echo "<script>Toastify({
+        text: 'Username already exists',
+        duration: 3000,
+        backgroundColor: 'linear-gradient(to right, #ff5f6d, #ffc3a0)',
+        position: 'top-right',
+        close: true,
+    }).showToast();</script>";
+    $isValid = false;
+  }
+
+  $searchemail = "SELECT * FROM Persons WHERE email = '$email'";
+  $stmt = $conn->prepare($searchemail);
+  $stmt->execute();
+  $result = $stmt->get_result();
+
+  if ($result->num_rows == 1) {
+    echo "<script>Toastify({
+        text: 'Email already exists',
+        duration: 4000,
+        backgroundColor: 'linear-gradient(to right, #ff5f6d, #ffc3a0)',
+        position: 'top-right',
+        close: true
+    }).showToast();</script>";
+    $isValid = false;
+  }
+
+  $searchphoenno = "SELECT * FROM Persons WHERE phoneno = '$phoneno'";
+  $stmt = $conn->prepare($searchphoenno);
+  $stmt->execute();
+  $result = $stmt->get_result();
+
+  if ($result->num_rows == 1) {
+    echo "<script>Toastify({
+        text: 'Phone number already exists',
+        duration: 4000,
+        backgroundColor: 'linear-gradient(to right, #ff5f6d, #ffc3a0)',
+        position: 'top-right',
+        close: true
+    }).showToast();</script>";
+    $isValid = false;
+  }
+
+
+  if (!$isValid) {
     exit;
   }
   $sql = "INSERT INTO Persons (password, username, firstname, lastname, phoneno, gender, street, city, state, country, zipcode, languages, email,image_path,add_phoneno)
