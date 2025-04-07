@@ -11,7 +11,7 @@
   <script src="https://unpkg.com/cropperjs@1.5.13/dist/cropper.min.js"></script>
   <!-- Include Toastify CSS -->
   <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css">
-
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
   <!-- Include Toastify JS -->
   <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
 
@@ -226,7 +226,6 @@
     </div>
   </div>
 
-
   <script>
     if (window.history.replaceState) {
       window.history.replaceState(null, null, window.location.href);
@@ -305,6 +304,7 @@
         croppedImagesData.value = JSON.stringify(croppedImages);
       }
     });
+
 
     var isValid = true;
 
@@ -629,26 +629,34 @@
         isValid = true;
       }
     });
-    document.getElementById("state").addEventListener("input", function(event) {
-      var state = document.getElementById("state").value.trim();
-      var errorElement = document.getElementById("state-err");
-      if (state == "") {
-        errorElement.style.display = "block";
-        errorElement.textContent = "state is required";
-        isValid = false;
-      } else {
-        var regex = /^[A-Za-z\s]+$/;
-        if (!state.match(regex)) {
+
+
+
+    state.addEventListener("input", function(event) {
+      var state = document.getElementById("state");
+      if (state != null) {
+        var state = state.value.trim();
+        var errorElement = document.getElementById("state-err");
+        if (state == "") {
           errorElement.style.display = "block";
-          errorElement.textContent =
-            "State can only contain alphabetic characters and spaces.";
+          errorElement.textContent = "state is required";
           isValid = false;
         } else {
-          errorElement.style.display = "none";
-          isValid = true;
+          var regex = /^[A-Za-z\s]+$/;
+          if (!state.match(regex)) {
+            errorElement.style.display = "block";
+            errorElement.textContent =
+              "State can only contain alphabetic characters and spaces.";
+            isValid = false;
+          } else {
+            errorElement.style.display = "none";
+            isValid = true;
+          }
         }
       }
+
     });
+
     document.querySelector('input[name="gender"]').addEventListener("input", function(event) {
       var gender = document.querySelector('input[name="gender"]:checked');
       var errorElement = document.getElementById("gender-err");
@@ -678,7 +686,6 @@
         document.getElementById("language-err").style.display = "none";
       }
     });
-
 
 
     function validateForm(event) {
@@ -745,14 +752,19 @@
       ];
 
       function checkField(field) {
-        var value = document.getElementById(field.id).value.trim();
-        var errorElement = document.getElementById(field.errorId);
-        if (value == "") {
-          errorElement.style.display = "block";
-          errorElement.textContent = field.errorMsg;
-          isValid = false;
-        } else {
-          errorElement.style.display = "none";
+
+        var check = document.getElementById(field.id);
+        if (check != null) {
+          var value = document.getElementById(field.id).value.trim();
+          var errorElement = document.getElementById(field.errorId);
+          if (value == "") {
+            errorElement.style.display = "block";
+            errorElement.textContent = field.errorMsg;
+            isValid = false;
+          } else {
+            errorElement.style.display = "none";
+            isValid = true;
+          }
         }
       }
 
@@ -767,9 +779,7 @@
         isValid = false;
       }
 
-      var confirmpassword = document
-        .getElementById("confirmpassword")
-        .value.trim();
+      var confirmpassword = document.getElementById("confirmpassword").value.trim();
       var errorElement = document.getElementById("conpassword-err");
       var password = document.getElementById("password").value.trim();
 
@@ -783,7 +793,6 @@
         isValid = false;
       } else {
         errorElement.style.display = "none";
-        isValid = true;
       }
 
 
@@ -823,8 +832,10 @@
         document.getElementById("country-err").style.display = "none";
       }
 
+      console.log(isValid);
 
       if (isValid) {
+
         return true;
       } else {
         event.preventDefault();
@@ -1870,6 +1881,7 @@
 
       const select = document.createElement("select");
       select.name = "state";
+      select.id = "selectstate";
       select.className =
         "bg-gray-50 border border-gray-300 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 mt-4 block w-full p-2.5";
 
@@ -1964,19 +1976,27 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
   $filePathsStr = implode(',', $filePaths);
 
 
-
   if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
-    echo "Invalid email format.";
+    echo "<script>Toastify({
+        text: 'Invalid email format.',
+        duration: 3000,
+        backgroundColor: 'linear-gradient(to right, #ff5f6d, #ffc3a0)',
+        position: 'top-right',
+        close: true,
+    }).showToast();</script>";
     exit;
   }
   if ($password !== $confirmpassword) {
-    echo "Passwords do not match!";
+    echo "<script>Toastify({
+        text: 'Passwords do not match.',
+        duration: 3000,
+        backgroundColor: 'linear-gradient(to right, #ff5f6d, #ffc3a0)',
+        position: 'top-right',
+        close: true,
+    }).showToast();</script>";
     exit;
   }
-  if (strlen($password) < 10) {
-    echo "Password must be at least 10 characters long.";
-    exit;
-  }
+
 
   $isValid = true;
 
@@ -2023,7 +2043,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         duration: 4000,
         backgroundColor: 'linear-gradient(to right, #ff5f6d, #ffc3a0)',
         position: 'top-right',
-        close: true
+        
     }).showToast();</script>";
     $isValid = false;
   }
