@@ -75,6 +75,26 @@
       font-family: Arial, sans-serif;
       padding: 20px;
     }
+
+    #popup {
+      background-color: whitesmoke !important;
+      padding: 10px;
+      padding-top: 2px !important;
+      border-radius: 8px;
+      display: none;
+      left: 654px;
+      position: absolute;
+      top: 228px;
+      outline: 1px solid rgb(214, 210, 210);
+      box-shadow: 2px 2px 5px rgb(49, 49, 49);
+    }
+
+    #closemodal {
+      cursor: pointer;
+      color: black !important;
+      font-weight: 600;
+      font-size: 15px;
+    }
   </style>
 </head>
 
