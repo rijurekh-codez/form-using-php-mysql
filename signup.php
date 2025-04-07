@@ -7,49 +7,49 @@
   <title>Sign Up</title>
   <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
   <link rel="stylesheet" href="style.css">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.2.3/css/bootstrap.min.css" />
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.6/cropper.css" />
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.2.3/js/bootstrap.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.6/cropper.js"></script>
+  <link href="https://unpkg.com/cropperjs@1.5.13/dist/cropper.min.css" rel="stylesheet">
+  <script src="https://unpkg.com/cropperjs@1.5.13/dist/cropper.min.js"></script>
 
+  <style>
+    #preview img {
+      max-width: 130px;
+      margin: 10px 0 10px 0;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+    }
 
+    .crop-container {
+      max-width: 400px;
+      display: none;
+      margin-bottom: 15px;
+    }
+
+    .crop-container img {
+      width: 100%;
+      height: auto;
+      display: block;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+    }
+
+    #cropBtn {
+      display: none;
+      padding: 10px 20px;
+      margin-bottom: 20px;
+      cursor: pointer;
+    }
+
+    button {
+      padding: 10px 20px;
+      cursor: pointer;
+    }
+
+    body {
+      font-family: Arial, sans-serif;
+      padding: 20px;
+    }
+  </style>
 </head>
-
-<style type="text/css">
-  img {
-    display: block;
-    max-width: 100%;
-  }
-
-  .preview {
-    text-align: center;
-    overflow: hidden;
-    width: 160px;
-    height: 160px;
-    margin: 10px;
-    border: 1px solid red;
-  }
-
-  input {
-    margin-top: 40px;
-  }
-
-  .section {
-    margin-top: 150px;
-    background: #fff;
-    padding: 50px 30px;
-  }
-
-  .modal-lg {
-    max-width: 1000px !important;
-  }
-
-  .error {
-    color: red;
-  }
-</style>
 
 
 
@@ -64,9 +64,9 @@
       <form class="px-4 2xl:w-250 lg:w-200 md:w-auto" action="signup.php" method="post" id="myform" enctype="multipart/form-data">
 
         <!-- Personal details -->
-        <h4>Personal Details:</h4>
-        <div class="grid xs:grid-cols-12 md:grid-cols-2 lg:grid-cols-3">
-          <div class=" pr-4">
+        <h4 class="mb-2">Personal Details:</h4>
+        <div class="grid xs:grid-cols-12 md:grid-cols-2 lg:grid-cols-2 gap-4">
+          <div class="pr-4">
             <input type="text" name="firstname" id="firstname" class="bg-gray-50 border border-gray-300 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5" placeholder=" first name" />
             <p id="firstname-err" style="color:red; display:none;"></p>
           </div>
@@ -117,44 +117,21 @@
           </div>
         </div>
 
-        <label for="image" class="text-md ">Upload an image:</label>
-        <input type="file" name="image" onclick="this.value=null;" id="dp" class="image form-control mt-2 " accept=".jpg, .jpeg, .png, .webp">
+
+        <label for="image" class="text-md">Upload an image:</label>
+        <input class="block w-90 text-sm text-gray-900 border border-gray-300 rounded-lg cursor-pointer bg-gray-50  focus:outline-none p-2" id="imageInput" type="file" onclick="this.value=null;" multiple accept="image/*">
         <p class="error" id="fileError"></p>
-        <input type="hidden" name="image_base64" id="imageBase64">
-        <span class="error" id="base64Error"></span>
-        <img src="" style="width: 200px;display: none;" class="show-image" id="show">
 
 
 
-        <div class="modal fade" id="modal" tabindex="-1" role="dialog" aria-labelledby="modalLabel" aria-hidden="true">
-          <div class="modal-dialog modal-lg" role="document">
-            <div class="modal-content">
 
-              <div class="modal-header">
-                <h1 class="modal-title fs-5" id="exampleModalLabel">New message</h1>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-              </div>
-
-
-              <div class="modal-body">
-                <div class="img-container">
-                  <div class="row">
-                    <div class="col-md-8">
-                      <img id="image" src="https://avatars0.githubusercontent.com/u/3456749">
-                    </div>
-                    <div class="col-md-4">
-                      <div class="preview"></div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-              <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" id="doNotCrop">Do not crop</button>
-                <button type="button" class="btn btn-primary" id="crop">Crop</button>
-              </div>
-            </div>
-          </div>
+        <div class="crop-container" id="cropWrapper">
+          <img id="currentImage">
         </div>
+        <button id="cropBtn" type="button">Crop</button>
+
+        <div id="preview" class="grid xs:grid-cols-12 md:grid-cols-2 lg:grid-cols-4 w-[80%]"></div>
+        <input type="hidden" name="cropped_images" id="croppedImagesData">
 
         <h4 class="mt-4">Address:</h4>
         <div class="grid xs:grid-cols-12 md:grid-cols-2 lg:grid-cols-2 ">
@@ -225,103 +202,68 @@
       window.history.replaceState(null, null, window.location.href);
     }
 
-    var $modal = $('#modal');
-    var image = document.getElementById('image');
-    console.log(image);
+    let files = [];
+    let currentFileIndex = 0;
+    let cropper;
+    let croppedImages = [];
 
-    var cropper;
+    const imageInput = document.getElementById("imageInput");
+    const cropWrapper = document.getElementById("cropWrapper");
+    const currentImage = document.getElementById("currentImage");
+    const cropBtn = document.getElementById("cropBtn");
+    const preview = document.getElementById("preview");
+    const croppedImagesData = document.getElementById("croppedImagesData");
 
+    imageInput.addEventListener("change", function(e) {
+      files = Array.from(e.target.files);
+      currentFileIndex = 0;
+      croppedImages = [];
 
-
-    $("body").on("change", ".image", function(e) {
-      var files = e.target.files;
       console.log(files);
 
-      var done = function(url) {
-        image.src = url;
-        $modal.modal('show');
-      };
-
-
-      if (files.length == 0) {
-        $(".show-image").hide();
-      }
-      var reader;
-      var file;
-      var url;
-
-      if (files && files.length > 0) {
-        file = files[0];
-
-        var allowedExtensions = /(\.jpg|\.jpeg|\.png|\.webp)$/i;
-        if (!allowedExtensions.exec(file.name)) {
-          $('#fileError').text('Only JPG, JPEG, PNG, and WebP files are allowed.');
-          return;
-        } else {
-          $('#fileError').text('');
-        }
-
-        if (URL) {
-          done(URL.createObjectURL(file));
-        } else if (FileReader) {
-          reader = new FileReader();
-          reader.onload = function(e) {
-            done(reader.result);
-          };
-          reader.readAsDataURL(file);
-        }
+      if (files.length > 0) {
+        showImageForCropping(files[currentFileIndex]);
       }
     });
 
-    $modal.on('shown.bs.modal', function() {
-      cropper = new Cropper(image, {
-        aspectRatio: 1,
-        viewMode: 3,
-        preview: '.preview'
-      });
-    }).on('hidden.bs.modal', function() {
-      cropper.destroy();
-      cropper = null;
-    });
+    function showImageForCropping(file) {
+      const reader = new FileReader();
+      reader.onload = function(e) {
+        currentImage.src = e.target.result;
+        cropWrapper.style.display = "block";
 
-    $("#crop").click(function() {
-      canvas = cropper.getCroppedCanvas({
-        width: 160,
-        height: 160,
-      });
+        if (cropper) cropper.destroy();
+        cropper = new Cropper(currentImage, {
+          aspectRatio: 1,
+          viewMode: 1,
+          autoCropArea: 1,
+          responsive: true,
+        });
 
-      canvas.toBlob(function(blob) {
-        url = URL.createObjectURL(blob);
-        var reader = new FileReader();
-        reader.readAsDataURL(blob);
-        reader.onloadend = function() {
-          var base64data = reader.result;
-          $("#imageBase64").val(base64data);
-          $(".show-image").show();
-          $(".show-image").attr("src", base64data);
-          console.log($(".show-image"));
-
-          $("#modal").modal('toggle');
-        }
-      });
-    });
-
-    $("#doNotCrop").click(function() {
-      var input = $(".image")[0];
-      var file = input.files[0];
-      var reader = new FileReader();
-
-      reader.onloadend = function() {
-        var base64data = reader.result;
-        $("#imageBase64").val(base64data);
-        $(".show-image").show();
-        $(".show-image").attr("src", base64data);
-        $("#modal").modal('toggle');
+        cropBtn.style.display = "inline-block";
       };
-
       reader.readAsDataURL(file);
-    });
+    }
 
+    cropBtn.addEventListener("click", function() {
+      const canvas = cropper.getCroppedCanvas();
+      const croppedDataUrl = canvas.toDataURL('image/jpeg');
+      croppedImages.push(croppedDataUrl);
+
+      const img = document.createElement("img");
+      img.src = croppedDataUrl;
+      preview.appendChild(img);
+
+      currentFileIndex++;
+      if (currentFileIndex < files.length) {
+        showImageForCropping(files[currentFileIndex]);
+      } else {
+        cropWrapper.style.display = "none";
+        cropBtn.style.display = "none";
+        if (cropper) cropper.destroy();
+        croppedImagesData.value = JSON.stringify(croppedImages);
+      }
+    });
 
     var isValid = true;
 
@@ -558,19 +500,18 @@
         }
       });
 
-    document.getElementById("image").addEventListener("input", function(event) {
-      var imgField = document.getElementById("dp").value;
+
+
+
+    document.getElementById("imageInput").addEventListener("input", function(event) {
+      var imgField = document.getElementById("imageInput").value;
       var errorElement = document.getElementById("fileError");
       if (imgField != "") {
-        var imgerr = document.getElementById("fileError");
-        imgerr.style.display = "none";
+        errorElement.style.display = "none";
         isValid = true;
-        var show = document.getElementById("show");
-        show.style.display = "none";
       }
 
       if (imgField == "") {
-        imgShow.style.display = "none";
         errorElement.style.display = "block";
         errorElement.textContent = "image is required";
         isValid = false;
@@ -680,7 +621,7 @@
           errorMsg: "Lastname is required",
         },
         {
-          id: "dp",
+          id: "imageInput",
           errorId: "fileError",
           errorMsg: "Image is required",
         },
@@ -745,10 +686,11 @@
 
       fields.forEach(checkField);
 
-      var imgField = document.getElementById("image").value;
+      var imgField = document.getElementById("imageInput").value;
       if (imgField == "") {
-        var imgerr = document.getElementById("image-err");
+        var imgerr = document.getElementById("fileError");
         imgerr.style.display = "block";
+        imgerr.style.color = "red";
         imgerr.textContent = "Image is Required";
         isValid = false;
       }
@@ -1859,6 +1801,8 @@
     </div>
   `;
     }
+
+
     document.querySelector("form").addEventListener("submit", validateForm);
   </script>
 
@@ -1889,25 +1833,46 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
   $all_languages = implode(",", $languages);
 
   // image
-  $imageData = $_POST['image_base64'];
-  if (!preg_match('/^data:image\/(png|jpeg);base64,/', $imageData, $imageType)) {
-    die('Error: Only PNG or JPG images are allowed.');
+
+  $croppedImages = json_decode($_POST['cropped_images'], true);
+  $uploadDir = 'Uploads/';
+  $filePaths = [];
+
+  foreach ($croppedImages as $index => $dataUrl) {
+    if (preg_match('/^data:image\/(\w+);base64,/', $dataUrl, $type)) {
+      $data = substr($dataUrl, strpos($dataUrl, ',') + 1);
+      $extension = strtolower($type[1]);
+
+      if (!in_array($extension, ['jpg', 'jpeg', 'png'])) {
+        echo "Invalid file type: " . $extension;
+        exit;
+      }
+
+      $data = base64_decode($data);
+      if ($data === false) {
+        echo "Base64 decode failed.";
+        exit;
+      }
+
+      $fileName = 'image_' . time() . '_' . $index . '.' . $extension;
+      $filePath = $uploadDir . $fileName;
+
+      if (file_put_contents($filePath, $data) === false) {
+        echo "Failed to save file: " . $filePath;
+        exit;
+      }
+
+      $filePaths[] = $filePath;
+    } else {
+      echo "Invalid image format.";
+      exit;
+    }
   }
 
-  $imageType = $imageType[1];
+  $filePathsStr = implode(',', $filePaths);
 
-  $binaryImageData = base64_decode(preg_replace('#^data:image/\w+;base64,#i', '', $imageData));
 
-  if (empty($binaryImageData)) {
-    die('Error: Invalid base64 image data.');
-  }
-  $imageName =  'dp.' . $imageType;
-  $uploadDirectory = 'Uploads/';
-  if (!is_dir($uploadDirectory)) {
-    mkdir($uploadDirectory, 0755, true);
-  }
-  $filePath = $uploadDirectory . $imageName;
-  file_put_contents($filePath, $binaryImageData);
+
   if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
     echo "Invalid email format.";
     exit;
@@ -1921,7 +1886,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     exit;
   }
   $sql = "INSERT INTO Persons (password, username, firstname, lastname, phoneno, gender, street, city, state, country, zipcode, languages, email,image_path,add_phoneno)
-          VALUES ('$password', '$username', '$firstname', '$lastname', '$phoneno', '$gender', '$street', '$city', '$state', '$country', '$zipcode', '$all_languages', '$email','$imageName','$add_phoneno')";
+          VALUES ('$password', '$username', '$firstname', '$lastname', '$phoneno', '$gender', '$street', '$city', '$state', '$country', '$zipcode', '$all_languages', '$email','$filePathsStr','$add_phoneno')";
 
   if ($conn->query($sql) === TRUE) {
     echo '<p style="color: green;">Account Created Successfully</p>';

@@ -1,140 +1,150 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 
 <head>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.2.3/css/bootstrap.min.css" />
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.6/cropper.css" />
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.2.3/js/bootstrap.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.6/cropper.js"></script>
+    <meta charset="UTF-8">
+    <title>Multiple Image Cropper</title>
+    <link href="https://unpkg.com/cropperjs@1.5.13/dist/cropper.min.css" rel="stylesheet">
+    <script src="https://unpkg.com/cropperjs@1.5.13/dist/cropper.min.js"></script>
+    <style>
+        #preview img {
+            max-width: 150px;
+            margin: 10px;
+            border: 1px solid #ccc;
+            padding: 4px;
+            border-radius: 6px;
+        }
+
+        .crop-container {
+            max-width: 400px;
+            display: none;
+            margin-bottom: 15px;
+        }
+
+        .crop-container img {
+            width: 100%;
+            height: auto;
+            display: block;
+            border: 1px solid #ccc;
+            border-radius: 6px;
+        }
+
+        #cropBtn {
+            display: none;
+            padding: 10px 20px;
+            margin-bottom: 20px;
+            cursor: pointer;
+        }
+
+        button {
+            padding: 10px 20px;
+            cursor: pointer;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            padding: 20px;
+        }
+    </style>
 </head>
-<style type="text/css">
-    h1 {
-        font-weight: bold;
-        font-size: 23px;
-    }
-
-    img {
-        display: block;
-        max-width: 100%;
-    }
-
-    .preview {
-        text-align: center;
-        overflow: hidden;
-        width: 160px;
-        height: 160px;
-        margin: 10px;
-        border: 1px solid red;
-    }
-
-    input {
-        margin-top: 40px;
-    }
-
-    .section {
-        margin-top: 150px;
-        background: #fff;
-        padding: 50px 30px;
-    }
-
-    .modal-lg {
-        max-width: 1000px !important;
-    }
-
-    .error {
-        color: red;
-    }
-</style>
 
 <body>
 
-    <div class="container">
-        <div class="row">
-
-            <div class="col-md-8 offset-md-2 section text-center">
-                <form action="dpupload.php" method="POST" id="imageUploadForm" enctype="multipart/form-data">
-
-                    <input type="file" name="images[]" class="image form-control" onclick="this.value=null;" id="dp" accept=".jpg, .jpeg, .png, .webp" multiple>
-                    <span class="error" id="fileError"></span>
-                    <input type="hidden" name="image_base64" id="imageBase64">
-                    <span class="error" id="base64Error"></span>
-                    <div style="display: flex;" id="imagePreviews"></div>
-                    <img src="" style="width: 200px;display: none;" class="show-image" id="show">
-
-                    <br />
-                    <button type="submit">Upload</button>
-                </form>
-            </div>
-            <div class="modal fade" id="modal" tabindex="-1" role="dialog" aria-labelledby="modalLabel" aria-hidden="true">
-                <div class="modal-dialog modal-lg" role="document">
-                    <div class="modal-content">
-
-                        <div class="modal-header">
-                            <h1 class="modal-title fs-5" id="exampleModalLabel">New message</h1>
-                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                        </div>
 
 
-                        <div class="modal-body">
-                            <div class="img-container">
-                                <div class="row">
-                                    <div class="col-md-8">
-                                        <img id="image" src="https://avatars0.githubusercontent.com/u/3456749">
-                                    </div>
-                                    <div class="col-md-4">
-                                        <div class="preview"></div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="modal-footer">
-                            <button type="button" class="btn btn-secondary" id="doNotCrop">Do not crop</button>
-                            <button type="button" class="btn btn-primary" id="crop">Crop</button>
-                        </div>
-                    </div>
-                </div>
-            </div>
+    <form id="imageForm" method="post" enctype="multipart/form-data" action="dpupload.php">
+        <h2>Select Multiple Images</h2>
+        <input type="file" id="imageInput" multiple accept="image/*"><br><br>
+
+        <div class="crop-container" id="cropWrapper">
+            <img id="currentImage">
         </div>
-    </div>
+        <button id="cropBtn" type="button">Crop</button>
+
+        <h3>Cropped Images Preview</h3>
+        <div id="preview"></div>
+
+        <input type="hidden" name="cropped_images" id="croppedImagesData">
+        <button type="submit">Submit All Cropped Images</button>
+    </form>
+
+    <script>
+        if (window.history.replaceState) {
+            window.history.replaceState(null, null, window.location.href);
+        }
+        let files = [];
+        let currentFileIndex = 0;
+        let cropper;
+        let croppedImages = [];
+
+        const imageInput = document.getElementById("imageInput");
+        const cropWrapper = document.getElementById("cropWrapper");
+        const currentImage = document.getElementById("currentImage");
+        const cropBtn = document.getElementById("cropBtn");
+        const preview = document.getElementById("preview");
+        const croppedImagesData = document.getElementById("croppedImagesData");
+        const imageForm = document.getElementById("imageForm");
+
+        imageInput.addEventListener("change", function(e) {
+            files = Array.from(e.target.files);
+            currentFileIndex = 0;
+            croppedImages = [];
+
+            if (files.length > 0) {
+                showImageForCropping(files[currentFileIndex]);
+            }
+        });
+
+        function showImageForCropping(file) {
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                currentImage.src = e.target.result;
+                cropWrapper.style.display = "block";
+
+                if (cropper) cropper.destroy();
+                cropper = new Cropper(currentImage, {
+                    aspectRatio: 1,
+                    viewMode: 1,
+                    autoCropArea: 1,
+                    responsive: true,
+                });
+
+                cropBtn.style.display = "inline-block";
+            };
+            reader.readAsDataURL(file);
+        }
+
+        cropBtn.addEventListener("click", function() {
+            const canvas = cropper.getCroppedCanvas();
+            const croppedDataUrl = canvas.toDataURL('image/jpeg');
+            croppedImages.push(croppedDataUrl);
+
+            const img = document.createElement("img");
+            img.src = croppedDataUrl;
+            preview.appendChild(img);
+
+            currentFileIndex++;
+            if (currentFileIndex < files.length) {
+                showImageForCropping(files[currentFileIndex]);
+            } else {
+                cropWrapper.style.display = "none";
+                cropBtn.style.display = "none";
+                if (cropper) cropper.destroy();
+                croppedImagesData.value = JSON.stringify(croppedImages);
+            }
+        });
+
+        imageForm.addEventListener("submit", function(e) {
+            if (croppedImages.length !== files.length) {
+                alert("Please crop all images before submitting!");
+                e.preventDefault();
+            } else {
+                console.log("Cropped Images Array:", croppedImages);
+            }
+        });
+    </script>
 
 </body>
-<script>
-    if (window.history.replaceState) {
-        window.history.replaceState(null, null, window.location.href);
-    }
-
-    $('input[name="images[]"]').on('change', function(event) {
-        var files = event.target.files;
-        console.log(files);
-
-        var previewContainer = $('#imagePreviews');
-        previewContainer.empty();
-
-        $.each(files, function(index, file) {
-            var reader = new FileReader();
-
-            reader.onload = function(e) {
-
-                var img = $('<img>').attr('src', e.target.result).css({
-                    'width': '100px',
-                    'aspect-ratio': 1,
-                    'margin-right': "8px",
-                    'object-fit': 'contain'
-                }).click(function() {
-                    console.log(file);
-
-                });
-                previewContainer.append(img);
-            };
-
-            reader.readAsDataURL(file);
-        });
-    });
-</script>
-
-
 
 </html>
 
@@ -142,35 +152,55 @@
 <?php
 include 'db.php';
 
-if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-    $uploadedFiles = $_FILES['images'];
-    $filenames = [];
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    if (isset($_POST['cropped_images'])) {
+        $croppedImages = json_decode($_POST['cropped_images'], true);
+        $uploadDir = 'Uploads/';
+        $filePaths = [];
 
-    $uploadDir = 'temp/';
-    $timestamp = time();
+        foreach ($croppedImages as $index => $dataUrl) {
+            if (preg_match('/^data:image\/(\w+);base64,/', $dataUrl, $type)) {
+                $data = substr($dataUrl, strpos($dataUrl, ',') + 1);
+                $extension = strtolower($type[1]);
 
-    for ($i = 0; $i < count($uploadedFiles['name']); $i++) {
-        $fileTmpName = $uploadedFiles['tmp_name'][$i];
-        $originalFileName = basename($uploadedFiles['name'][$i]);
+                if (!in_array($extension, ['jpg', 'jpeg', 'png'])) {
+                    echo "Invalid file type: " . $extension;
+                    exit;
+                }
 
-        $fileExtension = pathinfo($originalFileName, PATHINFO_EXTENSION);
-        $fileName = pathinfo($originalFileName, PATHINFO_FILENAME) . '_' . $timestamp . '.' . $fileExtension;
+                $data = base64_decode($data);
+                if ($data === false) {
+                    echo "Base64 decode failed.";
+                    exit;
+                }
 
-        $filePath = $uploadDir . $fileName;
+                $fileName = 'image_' . time() . '_' . $index . '.' . $extension;
+                $filePath = $uploadDir . $fileName;
 
-        if (move_uploaded_file($fileTmpName, $filePath)) {
-            $filenames[] = $fileName;
+                if (file_put_contents($filePath, $data) === false) {
+                    echo "Failed to save file: " . $filePath;
+                    exit;
+                }
+
+                $filePaths[] = $filePath;
+            } else {
+                echo "Invalid image format.";
+                exit;
+            }
         }
+
+        $filePathsStr = implode(',', $filePaths);
+
+        $stmt = $conn->prepare("INSERT INTO crop_images (filepath) VALUES (?)");
+        $stmt->bind_param("s", $filePathsStr);
+
+        if ($stmt->execute()) {
+            echo "Images uploaded and file paths saved to database.";
+        } else {
+            echo "Database error: " . $stmt->error;
+        }
+
+        $stmt->close();
+        $conn->close();
     }
-
-    $filenamesStr = implode(',', $filenames);
-
-    $stmt = $conn->prepare("INSERT INTO crop_images (filepath) VALUES (?)");
-    $stmt->bind_param("s", $filenamesStr);
-    $stmt->execute();
-    $stmt->close();
-    $conn->close();
-
-    echo "Files uploaded successfully!";
 }
-?>
