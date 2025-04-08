@@ -623,7 +623,7 @@
       var errorElement = document.getElementById("zipcode-err");
       if (zipcode == "") {
         errorElement.style.display = "block";
-        errorElement.textContent = "zipcode is required";
+        errorElement.textContent = "Zipcode is required";
         isValid = false;
       } else {
         if (/[^0-9]/.test(zipcode)) {
@@ -690,23 +690,26 @@
         isValid = true;
       }
     });
-    document.querySelector('input[name="languages[]"]').addEventListener("input", function(event) {
-      var languages = [];
-      var checkboxes = document.querySelectorAll("input[type=checkbox]:checked");
+document.querySelectorAll('input[name="languages[]"]').forEach(function(checkbox) {
+    checkbox.addEventListener("input", function(event) {
+        var languages = [];
+        var checkboxes = document.querySelectorAll("input[name='languages[]']:checked"); 
 
-      for (var i = 0; i < checkboxes.length; i++) {
-        languages.push(checkboxes[i].value);
-      }
+        checkboxes.forEach(function(checkbox) {
+            languages.push(checkbox.value);
+        });
 
-      if (languages.length == 0) {
-        var languageErrorElement = document.getElementById("language-err");
-        languageErrorElement.style.display = "block";
-        languageErrorElement.textContent = "Please select atleast  language.";
-        isValid = false;
-      } else {
-        document.getElementById("language-err").style.display = "none";
-      }
+        if (languages.length == 0) {
+            var languageErrorElement = document.getElementById("language-err");
+            languageErrorElement.style.display = "block";
+            languageErrorElement.textContent = "Please select at least one language.";
+            isValid = false;
+        } else {
+            document.getElementById("language-err").style.display = "none";
+        }
     });
+});
+
 
 
     function validateForm(event) {
@@ -1921,7 +1924,7 @@
       var stateContainer = document.getElementById("state-container");
       stateContainer.innerHTML = `
     <div>
-      <input type="text" id="state" name="state" class="bg-gray-50 border border-gray-300 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 mt-4" placeholder="Enter State" />
+      <input type="text" id="state" name="state" class="bg-gray-50 border border-gray-300 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 mt-4" placeholder="State" />
       <p id="state-err" style="color:red; display:none;"></p>
     </div>
   `;
@@ -1944,6 +1947,16 @@
         success: function(response) {
             $('#result').html(response);
             $('#myform')[0].reset();
+           $('#state-container').html(`
+            <div>
+                <input type="text" id="state" name="state" class="bg-gray-50 border border-gray-300 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 mt-4" placeholder="State" />
+                <p id="state-err" style="color:red; display:none;"></p>
+            </div>
+            `);
+
+            $('#selectstate').css("display", "none");
+            $('#preview').empty();
+
         },
         error: function(xhr, status, error) {
           console.log("AJAX ERROR", xhr.responseText);
