@@ -1927,42 +1927,42 @@ document.querySelectorAll('input[name="languages[]"]').forEach(function(checkbox
   `;
     }
 
-    $('#myform').on('submit', function(e) {
-      e.preventDefault();
-      if (!validateForm(e)) {
-        return false;
-      }
+    // $('#myform').on('submit', function(e) {
+    //   e.preventDefault();
+    //   if (!validateForm(e)) {
+    //     return false;
+    //   }
 
-      var formData = new FormData(this);
+    //   var formData = new FormData(this);
 
-      $.ajax({
-        url: 'signup.php',
-        type: 'POST',
-        data: formData,
-        contentType: false,
-        processData: false,
-        success: function(response) {
-            $('#result').html(response);
-            $('#myform')[0].reset();
-           $('#state-container').html(`
-            <div>
-                <input type="text" id="state" name="state" class="bg-gray-50 border border-gray-300 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 mt-4" placeholder="State" />
-                <p id="state-err" style="color:red; display:none;"></p>
-            </div>
-            `);
+    //   $.ajax({
+    //     url: 'signup.php',
+    //     type: 'POST',
+    //     data: formData,
+    //     contentType: false,
+    //     processData: false,
+    //     success: function(response) {
+    //         $('#result').html(response);
+    //         $('#myform')[0].reset();
+    //        $('#state-container').html(`
+    //         <div>
+    //             <input type="text" id="state" name="state" class="bg-gray-50 border border-gray-300 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 mt-4" placeholder="State" />
+    //             <p id="state-err" style="color:red; display:none;"></p>
+    //         </div>
+    //         `);
 
-            $('#selectstate').css("display", "none");
-            $('#preview').empty();
+    //         $('#selectstate').css("display", "none");
+    //         $('#preview').empty();
 
-        },
-        error: function(xhr, status, error) {
-          console.log("AJAX ERROR", xhr.responseText);
-          $('#result').html(error);
-        }
-      });
-    });
+    //     },
+    //     error: function(xhr, status, error) {
+    //       console.log("AJAX ERROR", xhr.responseText);
+    //       $('#result').html(error);
+    //     }
+    //   });
+    // });
 
-    // document.querySelector("form").addEventListener("submit", validateForm);
+     document.querySelector("form").addEventListener("submit", validateForm);
   </script>
 
 </body>

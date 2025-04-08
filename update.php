@@ -154,7 +154,7 @@ $conn->close();
                         </svg>
                         <p class="text-gray-600">Additonal Phone No</p>
                     </div>
-                    <input type="text" class="bg-gray-400 rounded-sm px-2 mb-1 border-1" id="add_phoneno" name="add_phoneno" value="<?php echo htmlspecialchars($add_phoneno); ?>" />
+                    <input type="text" class="bg-gray-400 rounded-sm px-2 mb-1 border-1" id="add_phoneno" name="add_phoneno" value="<?php echo $add_phoneno; ?>" />
 
 
                     <div class="text-center flex items-center gap-2">
