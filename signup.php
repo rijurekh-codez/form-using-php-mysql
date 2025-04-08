@@ -169,13 +169,9 @@
 
         <label for="image" class="text-md">Upload an image:</label>
         <input class="block w-90 text-sm text-gray-900 border border-gray-300 rounded-lg cursor-pointer bg-gray-50  focus:outline-none p-2" id="imageInput" type="file" onclick="this.value=null;" multiple accept="image/*">
-        <p class="error" id="fileError"></p>
+        <p class="error" id="fileError" style="display: red;"></p>
 
 
-        <!-- <div class="crop-container" id="cropWrapper">
-          <img id="currentImage">
-        </div>
-        <button id="cropBtn" type="button">Crop</button> -->
 
         <div id="preview" class="grid xs:grid-cols-12 md:grid-cols-2 lg:grid-cols-5 w-[90%]">
           <?php if (isset($_POST['cropped_images'])) { ?>
@@ -453,9 +449,11 @@
       if (phoneNo === "") {
         errorElement.style.display = "block";
         errorElement.textContent = "Phone number is required.";
+        isValid = false;
       } else if (!phoneRegex.test(phoneNo)) {
         errorElement.style.display = "block";
         errorElement.textContent = "Phone number must be in a valid format.";
+        isValid = false;
       } else {
         errorElement.style.display = "none";
         isValid = true;
@@ -472,6 +470,7 @@
       } else if (!phoneRegex.test(add_phoneno)) {
         errorElement.style.display = "block";
         errorElement.textContent = "Phone number must be in a valid format.";
+        isValid = false;
       } else {
         errorElement.style.display = "none";
         isValid = true;
@@ -646,6 +645,8 @@
         }
       }
     });
+
+
 
     document.getElementById("zipcode").addEventListener("input", function(event) {
       var zipcode = document.getElementById("zipcode").value.trim();
@@ -837,6 +838,95 @@
           isValid = false;
         }
       }
+
+      var firstname = document.getElementById("firstname").value.trim();
+      var errorElement = document.getElementById("firstname-err");
+
+      if (firstname == "") {
+        errorElement.style.display = "block";
+        errorElement.textContent = "Firstname is required";
+        isValid = false;
+      } else {
+        var regex = /^[A-Za-z\s]+$/;
+        if (!firstname.match(regex)) {
+          errorElement.style.display = "block";
+          errorElement.textContent =
+            "First Name can only contain alphabetic characters and spaces.";
+          isValid = false;
+        } else {
+          errorElement.style.display = "none";
+        }
+      }
+      var lastname = document.getElementById("lastname").value.trim();
+      var errorElement = document.getElementById("lastname-err");
+
+      if (lastname == "") {
+        errorElement.style.display = "block";
+        errorElement.textContent = "lastname is required";
+        isValid = false;
+      } else {
+        var regex = /^[A-Za-z\s]+$/;
+        if (!lastname.match(regex)) {
+          errorElement.style.display = "block";
+          errorElement.textContent =
+            "First Name can only contain alphabetic characters and spaces.";
+          isValid = false;
+        } else {
+          errorElement.style.display = "none";
+        }
+      }
+
+
+      var email = document.getElementById("email").value.trim();
+      var errorElement = document.getElementById("email-err");
+
+      if (email == "") {
+        errorElement.style.display = "block";
+        errorElement.textContent = "Email is required";
+        isValid = false;
+      } else {
+        var regex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+        if (!email.match(regex)) {
+          errorElement.style.display = "block";
+          errorElement.textContent = "Please Enter a valid email.";
+          isValid = false;
+        } else {
+          errorElement.style.display = "none";
+        }
+      }
+
+      var phoneNo = document.getElementById("phoneno").value.trim();
+      var errorElement = document.getElementById("phoneno-err");
+
+      var phoneRegex = /^(?:\+91[\s-]?)?[789]\d{9}$/;
+
+      if (phoneNo === "") {
+        errorElement.style.display = "block";
+        errorElement.textContent = "Phone number is required.";
+        isValid = false;
+      } else if (!phoneRegex.test(phoneNo)) {
+        errorElement.style.display = "block";
+        errorElement.textContent = "Phone number must be in a valid format.";
+        isValid = false;
+      } else {
+        errorElement.style.display = "none";
+      }
+
+      var add_phoneno = document.getElementById("add_phoneno").value.trim();
+      var errorElement = document.getElementById("add_phoneno-err");
+
+      var phoneRegex = /^(?:\+91[\s-]?)?[789]\d{9}$/;
+      if (add_phoneno == "") {
+        errorElement.style.display = "none";
+        isValid = isValid & true;
+      } else if (!phoneRegex.test(add_phoneno)) {
+        errorElement.style.display = "block";
+        errorElement.textContent = "Phone number must be in a valid format.";
+        isValid = false;
+      } else {
+        errorElement.style.display = "none";
+      }
+
 
 
       var popup = document.getElementById("popup");
