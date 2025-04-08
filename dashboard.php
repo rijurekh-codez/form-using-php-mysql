@@ -14,7 +14,8 @@ $stmt->bind_param("s", $username);
 $stmt->execute();
 $result = $stmt->get_result();
 $row = $result->fetch_assoc();
-
+$image_paths = explode(',', $row['image_path']);
+$first_image = $image_paths[0];
 ?>
 
 <!DOCTYPE html>
@@ -33,7 +34,7 @@ $row = $result->fetch_assoc();
 
     <div class="border-2 border-gray-300 rounded-lg p-5 w-200 bg-gray-100">
         <div class="flex flex flex-col md:flex-row items-center gap-4 mb-7  ">
-            <img class="w-[150px] rounded-full mt-2" src="<?php echo 'Uploads/' . $row['image_path']; ?>" alt="">
+            <img class="w-[150px] rounded-full mt-2" src=<?php echo $first_image; ?> alt="Profile Picture">
 
             <div>
                 <p class="text-[30px] font-semibold"><?php echo $row['firstname'] . ' ' . $row['lastname']; ?></p>

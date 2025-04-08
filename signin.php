@@ -6,35 +6,6 @@ if (isset($_SESSION['user'])) {
   exit;
 }
 
-include 'db.php';
-
-if ($_SERVER["REQUEST_METHOD"] == "POST") {
-  $username = mysqli_real_escape_string($conn, $_POST['username']);
-  $password = $_POST['password'];
-
-  $sql = "SELECT * FROM Persons WHERE username = ?";
-  $stmt = $conn->prepare($sql);
-  $stmt->bind_param("s", $username);
-  $stmt->execute();
-  $result = $stmt->get_result();
-
-  if ($result->num_rows == 1) {
-    $row = $result->fetch_assoc();
-
-    if ($password == $row['password']) {
-      $_SESSION['user'] = $username;
-      header('Location: dashboard.php');
-      exit;
-    } else {
-      $error_message = "Invalid Credentials!";
-    }
-  } else {
-    $error_message = "Invalid Credentials!";
-  }
-
-  $stmt->close();
-  $conn->close();
-}
 ?>
 
 <!DOCTYPE html>
@@ -45,9 +16,12 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Sign In</title>
   <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+  <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css">
+  <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
+
 </head>
 
-<body class="h-screen bg-green-100 pt-35">
+<body class="h-screen bg-green-100  flex justify-center items-center">
   <div class="flex bg-green-100 justify-center items-center">
 
     <form id="myform" class="bg-indigo-200 rounded-lg p-4 w-100" action="signin.php" method="post">
@@ -65,10 +39,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
       <button type="submit" class="bg-blue-700 text-white hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">Sign in</button>
 
-      <?php if (isset($error_message)) { ?>
-        <p style="color:red; margin-top:10px;"><?php echo $error_message; ?></p>
-      <?php } ?>
-      <p class="mt-2">Don't have an account ? <a href="signup.php" class="font-bold">Sign Up</a></p>
+
+      <p class="mt-2">Don't have an account ? <a href="signup.html" class="font-bold">Sign Up</a></p>
     </form>
   </div>
 
@@ -136,3 +108,51 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
   document.querySelector('form').addEventListener('submit', validateForm);
 </script>
+
+<?php
+include 'db.php';
+
+if ($_SERVER["REQUEST_METHOD"] == "POST") {
+  $username = mysqli_real_escape_string($conn, $_POST['username']);
+  $password = $_POST['password'];
+
+  $sql = "SELECT * FROM Persons WHERE username = ?";
+  $stmt = $conn->prepare($sql);
+  $stmt->bind_param("s", $username);
+  $stmt->execute();
+  $result = $stmt->get_result();
+
+  if ($result->num_rows == 1) {
+    $row = $result->fetch_assoc();
+
+    if ($password == $row['password']) {
+      $_SESSION['user'] = $username;
+      header('Location: dashboard.php');
+      exit;
+    } else {
+      echo "<script>
+  Toastify({
+    text: 'Invalid Credentials!',
+    duration: 3000,
+    backgroundColor: 'linear-gradient(to right, #ff5f6d, #ffc3a0)',
+    position: 'top-left',
+    close: true,
+  }).showToast();
+</script>";
+    }
+  } else {
+    echo "<script>
+  Toastify({
+    text: 'Invalid Credentials!',
+    duration: 3000,
+    backgroundColor: 'linear-gradient(to right, #ff5f6d, #ffc3a0)',
+    position: 'top-right',
+    close: true,
+  }).showToast();
+</script>";
+  }
+
+  $stmt->close();
+  $conn->close();
+}
+?>
