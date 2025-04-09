@@ -1,3 +1,8 @@
+<?php
+session_start();
+
+?>
+
 <!DOCTYPE html>
 <html lang="en">
 
@@ -9,8 +14,8 @@
   <link rel="stylesheet" href="style.css">
   <link href="https://unpkg.com/cropperjs@1.5.13/dist/cropper.min.css" rel="stylesheet">
   <script src="https://unpkg.com/cropperjs@1.5.13/dist/cropper.min.js"></script>
-  <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css">
-  <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
+  <!-- <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css">
+  <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/toastify-js"></script> -->
   <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
   <style>
     #box {
@@ -98,6 +103,33 @@
 
 <body style="display: flex; justify-content: center; align-items:center ;flex-direction: column;" class=" sm:h-full">
 
+  <?php
+  if (isset($_SESSION['form_errors']) && count($_SESSION['form_errors']) > 0) {
+
+    echo "<div class='2xl:w-250 lg:w-200 md:w-auto' style='background-color:rgb(247, 196, 202); border-radius : 8px ;padding:10px 20px;margin-bottom:10px'>";
+    foreach ($_SESSION['form_errors'] as $error) {
+      echo "<p style='color: #ff2c2c;'>• $error</p>";
+    }
+    echo "</div>";
+    unset($_SESSION['form_errors']);
+  }
+  ?>
+
+
+
+
+  <?php
+  if (isset($_SESSION['success'])) {
+    $success = $_SESSION['success'];
+    echo "<div class='2xl:w-250 lg:w-200 md:w-auto text-center' style='background-color: #8effc1; border-radius : 8px ;padding:10px 20px;margin-bottom:10px ;'>";
+    echo "<p style='color:rgb(7, 70, 4);'>• $success</p>";
+    echo "</div>";
+
+    unset($_SESSION['form_errors']);
+    unset($_SESSION['success']);
+  }
+  ?>
+
   <div id="box">
     <div class="crop-container" id="cropWrapper">
       <img id="currentImage">
@@ -110,33 +142,33 @@
         <h1 class="text-3xl font-medium">Create Your Account</h1>
         <p class="text-[15px]">Create Your Account</p>
       </div>
-      <form class="px-4 2xl:w-250 lg:w-200 md:w-auto" id="myform" enctype="multipart/form-data" action="signup.php" method="post">
+      <form class="px-4 2xl:w-250 lg:w-200 md:w-auto" id="myform" enctype="multipart/form-data" action="create.php" method="post">
 
         <!-- Personal details -->
         <h4 class="mb-2">Personal Details:</h4>
         <div class="grid xs:grid-cols-12 md:grid-cols-2 lg:grid-cols-2 gap-4">
           <div class="pr-4">
-            <input type="text" name="firstname" id="firstname" class="bg-gray-50 border border-gray-300 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5" value="<?php echo $_POST['firstname'] ?? ''; ?>" placeholder=" first name" />
+            <input type="text" name="firstname" id="firstname" class="bg-gray-50 border border-gray-300 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5" value="<?php echo $_SESSION['form_data']['firstname'] ?? ''; ?>" placeholder=" first name" />
             <p id="firstname-err" style="color:red; display:none;"></p>
           </div>
           <div class=" pr-4">
-            <input type="text" name="lastname" id="lastname" class="bg-gray-50 border border-gray-300 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5" value="<?php echo $_POST['lastname'] ?? ''; ?>" placeholder="last name" />
+            <input type="text" name="lastname" id="lastname" class="bg-gray-50 border border-gray-300 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5" value="<?php echo $_SESSION['form_data']['lastname'] ?? ''; ?>" placeholder="last name" />
             <p id="lastname-err" style="color:red; display:none;"></p>
           </div>
           <div class=" pr-4">
-            <input type="text" name="username" id="username" class="bg-gray-50 border border-gray-300 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5" value="<?php echo $_POST['username'] ?? ''; ?>" placeholder=" username" />
+            <input type="text" name="username" id="username" class="bg-gray-50 border border-gray-300 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5" value="<?php echo $_SESSION['form_data']['username'] ?? ''; ?>" placeholder=" username" />
             <p id="username-err" style="color:red; display:none;"></p>
           </div>
           <div class=" pr-4">
-            <input type="email" id="email" name="email" class="bg-gray-50 border border-gray-300 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5" value="<?php echo $_POST['email'] ?? ''; ?>" placeholder=" email" />
+            <input type="email" id="email" name="email" class="bg-gray-50 border border-gray-300 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5" value="<?php echo $_SESSION['form_data']['email'] ?? ''; ?>" placeholder=" email" />
             <p id="email-err" style="color:red; display:none;"></p>
           </div>
           <div class=" pr-4">
-            <input type="text" name="phoneno" id="phoneno" class="bg-gray-50 border border-gray-300 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5" value="<?php echo $_POST['phoneno'] ?? ''; ?>" placeholder=" phone number" />
+            <input type="text" name="phoneno" id="phoneno" class="bg-gray-50 border border-gray-300 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5" value="<?php echo $_SESSION['form_data']['phoneno'] ?? ''; ?>" placeholder=" phone number" />
             <p id="phoneno-err" style="color:red; display:none;"></p>
           </div>
           <div class=" pr-4">
-            <input type="text" name="add_phoneno" id="add_phoneno" class="bg-gray-50 border border-gray-300 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5" value="<?php echo $_POST['add_phoneno'] ?? ''; ?>" placeholder="Additional phone number" />
+            <input type="text" name="add_phoneno" id="add_phoneno" class="bg-gray-50 border border-gray-300 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5" value="<?php echo $_SESSION['form_data']['add_phoneno'] ?? ''; ?>" placeholder="Additional phone number" />
             <p id="add_phoneno-err" style="color:red; display:none;"></p>
           </div>
           <!-- Password -->
@@ -144,13 +176,13 @@
             <div id="popup">
               <div>
                 <li style="color: red; font-size:15px" id="smallp">Should contain atleast one small alphabet</li>
-                <li style="color: red; font-size:15px" id="capp">Should contain atleast one cappital alphabet</li>
+                <li style="color: red; font-size:15px" id="capp">Should contain atleast one capital alphabet</li>
                 <li style="color: red; font-size:15px" id="digp">Should contain atleast one number</li>
                 <li style="color: red; font-size:15px" id="specp">Should contain atleast one special symbol</li>
               </div>
               <p id="closemodal">&#x2715</p>
             </div>
-            <input type="password" id="password" name="password" value="<?php echo $_POST['password'] ?? ''; ?>" class=" bg-gray-50 border border-gray-300 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5" placeholder=" Password" />
+            <input type="password" id="password" name="password" value="<?php echo $_SESSION['form_data']['password'] ?? ''; ?>" class=" bg-gray-50 border border-gray-300 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5" placeholder=" Password" />
 
             <p id="password-err" style="color:red; display:none;">
 
@@ -161,7 +193,7 @@
             </p>
           </div>
           <div class="mb-2 pr-4">
-            <input type="password" id="confirmpassword" value="<?php echo $_POST['confirmpassword'] ?? ''; ?>" name=" confirmpassword" class="bg-gray-50 border border-gray-300 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5" placeholder="Confirm Password" />
+            <input type="password" id="confirmpassword" value="<?php echo $_SESSION['form_data']['confirmpassword'] ?? ''; ?>" name=" confirmpassword" class="bg-gray-50 border border-gray-300 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5" placeholder="Confirm Password" />
             <p id="conpassword-err" style="color:red; display:none;"></p>
           </div>
         </div>
@@ -174,14 +206,15 @@
 
 
         <div id="preview" class="grid xs:grid-cols-12 md:grid-cols-2 lg:grid-cols-5 w-[90%]">
-          <?php if (isset($_POST['cropped_images'])) { ?>
-            <?php $croppedImages = json_decode($_POST['cropped_images'], true); ?>
-            <?php foreach ($croppedImages as $idx => $dataUrl) { ?>
-              <img src="<?php echo $dataUrl; ?>" alt="">
+          <?php
+          if (!empty($_SESSION['form_data']['cropped_images'])) {
+            $croppedImages = json_decode($_SESSION['form_data']['cropped_images'], true);
 
-            <?php } ?>
-          <?php } ?>
-
+            foreach ($croppedImages as $idx => $dataUrl) {
+              echo '<img src="' . htmlspecialchars($dataUrl) . '" alt="">';
+            }
+          }
+          ?>
 
         </div>
         <input type="hidden" name="cropped_images" id="croppedImagesData">
@@ -190,11 +223,11 @@
         <div class="grid xs:grid-cols-12 md:grid-cols-2 lg:grid-cols-2 ">
           <!-- Address -->
           <div class=" pr-4">
-            <input type="text" name="street" id="street" class="bg-gray-50 border border-gray-300 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5" value="<?php echo $_POST['street'] ?? ''; ?>" placeholder=" street" />
+            <input type="text" name="street" id="street" class="bg-gray-50 border border-gray-300 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5" value="<?php echo $_SESSION['form_data']['street'] ?? ''; ?>" placeholder=" street" />
             <p id="street-err" style="color:red; display:none;"></p>
           </div>
           <div class=" pr-4">
-            <input type="text" name="city" id="city" class="bg-gray-50 border border-gray-300 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5" value="<?php echo $_POST['city'] ?? ''; ?>" placeholder=" City" />
+            <input type="text" name="city" id="city" class="bg-gray-50 border border-gray-300 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5" value="<?php echo $_SESSION['form_data']['city'] ?? ''; ?>" placeholder=" City" />
             <p id="city-err" style="color:red; display:none;"></p>
           </div>
 
@@ -208,12 +241,12 @@
           </div>
 
           <div class=" pr-4" id="state-container">
-            <input type="text" name="state" id="state" class="bg-gray-50 border border-gray-300 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 mt-4" value="<?php echo $_POST['state'] ?? ''; ?>" placeholder=" State" />
+            <input type="text" name="state" id="state" class="bg-gray-50 border border-gray-300 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 mt-4" value="<?php echo $_SESSION['form_data']['state'] ?? ''; ?>" placeholder=" State" />
             <p id="state-err" style="color:red; display:none;"></p>
           </div>
 
           <div class="mb-2 pr-4">
-            <input type="text" name="zipcode" id="zipcode" class="bg-gray-50 border border-gray-300 text-sm rounded-lg focus:ring-blue-500 mt-4 focus:border-blue-500 block w-full p-2.5" value="<?php echo $_POST['zipcode'] ?? ''; ?>" placeholder=" zip code" />
+            <input type="text" name="zipcode" id="zipcode" class="bg-gray-50 border border-gray-300 text-sm rounded-lg focus:ring-blue-500 mt-4 focus:border-blue-500 block w-full p-2.5" value="<?php echo $_SESSION['form_data']['zipcode'] ?? ''; ?>" placeholder=" zip code" />
             <p id="zipcode-err" style="color:red; display:none;"></p>
           </div>
         </div>
@@ -223,9 +256,9 @@
         <div class="mb-2 pr-4">
 
           <span>Gender: </span>
-          <input type="radio" id="male" name="gender" value="Male" <?php if (isset($_POST['gender']) && $_POST['gender'] == 'Male') echo 'checked'; ?>>
+          <input type="radio" id="male" name="gender" value="Male" <?php if (isset($_SESSION['form_data']['gender']) && $_SESSION['form_data']['gender'] == 'Male') echo 'checked'; ?>>
           <label for="male">Male</label>
-          <input type="radio" id="female" name="gender" value="Female" <?php if (isset($_POST['gender']) &&  $_POST['gender'] == 'Female') echo 'checked'; ?>>
+          <input type="radio" id="female" name="gender" value="Female" <?php if (isset($_SESSION['form_data']['gender']) &&  $_SESSION['form_data']['gender'] == 'Female') echo 'checked'; ?>>
           <label for="female">Female</label>
           <p id="gender-err" style="color:red; display:none;"></p>
         </div>
@@ -235,9 +268,9 @@
 
           <div class="pr-4 ">
             <p class="m-0">Languages: </p>
-            <input type="checkbox" name="languages[]" value="English" class="inline m-0" <?php if (isset($_POST['languages']) && in_array('English', $_POST['languages'], TRUE)) echo 'checked'; ?>> English <br>
-            <input type="checkbox" name="languages[]" value="Hindi" class="inline m-0" <?php if (isset($_POST['languages']) && in_array('Hindi', $_POST['languages'], TRUE)) echo 'checked'; ?>> Hindi <br>
-            <input type="checkbox" name="languages[]" value="Bengali" class="m-0" <?php if (isset($_POST['languages']) && in_array('Bengali', $_POST['languages'], TRUE)) echo 'checked'; ?>> Bengali <br>
+            <input type="checkbox" name="languages[]" value="English" class="inline m-0" <?php if (isset($_SESSION['form_data']['languages']) && in_array('English', $_SESSION['form_data']['languages'], TRUE)) echo 'checked'; ?>> English <br>
+            <input type="checkbox" name="languages[]" value="Hindi" class="inline m-0" <?php if (isset($_SESSION['form_data']['languages']) && in_array('Hindi', $_SESSION['form_data']['languages'], TRUE)) echo 'checked'; ?>> Hindi <br>
+            <input type="checkbox" name="languages[]" value="Bengali" class="m-0" <?php if (isset($_SESSION['form_data']['languages']) && in_array('Bengali', $_SESSION['form_data']['languages'], TRUE)) echo 'checked'; ?>> Bengali <br>
 
             <p id="language-err" style="color:red; display:none;"></p>
           </div>
@@ -252,9 +285,9 @@
   </div>
 
   <script>
-    <?php if (isset($_POST['cropped_images'])) { ?>
+    <?php if (isset($_SESSION['form_data']['cropped_images'])) { ?>
       var obj = new Array();
-      <?php $croppedImages = json_decode($_POST['cropped_images'], true); ?>
+      <?php $croppedImages = json_decode($_SESSION['form_data']['cropped_images'], true); ?>
       <?php
       foreach ($croppedImages as $idx => $dataUrl) {
       ?>
@@ -488,6 +521,7 @@
       popup.style.justifyContent = "space-between";
 
       var password = document.getElementById("password").value.trim();
+      var confirmpassword = document.getElementById("confirmpassword").value.trim();
       var passlen = document.getElementById("passlen");
       var passreq = document.getElementById("passreq");
       var smallp = document.getElementById("smallp");
@@ -518,6 +552,7 @@
         passlen.style.display = "none";
         isValid = true;
       }
+
 
       if (password.match(/[a-z]+/)) {
         smallp.style.color = "green";
@@ -558,7 +593,13 @@
 
       if (containsCapital && containsSmall && containsDigit && containsSpecial) {
         popup.style.display = "none";
+        if (password && confirmpassword && password == confirmpassword) {
+          var errorElement = document.getElementById("conpassword-err");
+          errorElement.style.display = "none";
+        }
       }
+
+
 
     });
 
@@ -586,8 +627,6 @@
           }
         }
       });
-
-
 
 
     document.getElementById("imageInput").addEventListener("input", function(event) {
@@ -645,8 +684,6 @@
         }
       }
     });
-
-
 
     document.getElementById("zipcode").addEventListener("input", function(event) {
       var zipcode = document.getElementById("zipcode").value.trim();
@@ -2052,7 +2089,7 @@
         var option = document.createElement("option");
         option.value = c.name;
         option.textContent = c.name;
-        if (c.name == '<?php if (isset($_POST["country"])) echo  $_POST["country"]; ?>') {
+        if (c.name == '<?php if (isset($_SESSION['form_data']["country"])) echo  $_SESSION['form_data']["country"]; ?>') {
           option.setAttribute("selected", "selected");
         }
         country.appendChild(option);
@@ -2121,7 +2158,7 @@
         option.value = state;
         option.textContent = state;
 
-        if (state == "<?php if (isset($_POST['state'])) echo  $_POST['state']; ?>") {
+        if (state == "<?php if (isset($_SESSION['form_data']['state'])) echo  $_SESSION['form_data']['state']; ?>") {
 
           option.setAttribute("selected", "selected");
         }
@@ -2145,7 +2182,7 @@
 
 
     // document.onload = () => {
-    var ind = "<?php if (isset($_POST['country'])) echo  $_POST['country']; ?>";
+    var ind = "<?php if (isset($_SESSION['form_data']['country'])) echo  $_SESSION['form_data']['country']; ?>";
     ind = ind.toLocaleLowerCase();
 
     if (ind == 'india') {
@@ -2197,165 +2234,3 @@
 </body>
 
 </html>
-
-<?php
-include 'db.php';
-
-if ($_SERVER["REQUEST_METHOD"] == "POST") {
-  $username = mysqli_real_escape_string($conn, $_POST["username"]);
-  $password = mysqli_real_escape_string($conn, $_POST["password"]);
-  $confirmpassword = mysqli_real_escape_string($conn, $_POST["confirmpassword"]);
-  $firstname = mysqli_real_escape_string($conn, $_POST["firstname"]);
-  $lastname = mysqli_real_escape_string($conn, $_POST["lastname"]);
-  $phoneno = mysqli_real_escape_string($conn, $_POST["phoneno"]);
-  $add_phoneno = mysqli_real_escape_string($conn, $_POST["add_phoneno"]);
-  $gender = mysqli_real_escape_string($conn, $_POST["gender"]);
-  $street = mysqli_real_escape_string($conn, $_POST["street"]);
-  $city = mysqli_real_escape_string($conn, $_POST["city"]);
-  $state = mysqli_real_escape_string($conn, $_POST["state"]);
-  $country = mysqli_real_escape_string($conn, $_POST["country"]);
-  $zipcode = mysqli_real_escape_string($conn, $_POST["zipcode"]);
-  $email = mysqli_real_escape_string($conn, $_POST["email"]);
-  $languages = $_POST['languages'];
-
-
-  $all_languages = implode(",", $languages);
-
-  // image
-
-  $croppedImages = json_decode($_POST['cropped_images'], true);
-  $uploadDir = 'Uploads/';
-  $filePaths = [];
-
-
-
-  if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
-    echo "<script>Toastify({
-        text: 'Invalid email format.',
-        duration: 3000,
-        backgroundColor: 'linear-gradient(to right, #ff5f6d, #ffc3a0)',
-        position: 'top-right',
-        close: true,
-    }).showToast();</script>";
-    exit;
-  }
-  if ($password !== $confirmpassword) {
-    echo "<script>Toastify({
-        text: 'Passwords do not match.',
-        duration: 3000,
-        backgroundColor: 'linear-gradient(to right, #ff5f6d, #ffc3a0)',
-        position: 'top-right',
-        close: true,
-    }).showToast();</script>";
-    exit;
-  }
-
-
-  $isValid = true;
-
-  $searchUsername = "SELECT * FROM Persons WHERE username = '$username'";
-  $stmt = $conn->prepare($searchUsername);
-  $stmt->execute();
-  $result = $stmt->get_result();
-
-  if ($result->num_rows == 1) {
-    echo "<script>Toastify({
-        text: 'Username already exists',
-        duration: 3000,
-        backgroundColor: 'linear-gradient(to right, #ff5f6d, #ffc3a0)',
-        position: 'top-right',
-        close: true,
-    }).showToast();</script>";
-    $isValid = false;
-  }
-
-  $searchemail = "SELECT * FROM Persons WHERE email = '$email'";
-  $stmt = $conn->prepare($searchemail);
-  $stmt->execute();
-  $result = $stmt->get_result();
-
-  if ($result->num_rows == 1) {
-    echo "<script>Toastify({
-        text: 'Email already exists',
-        duration: 4000,
-        backgroundColor: 'linear-gradient(to right, #ff5f6d, #ffc3a0)',
-        position: 'top-right',
-        close: true
-    }).showToast();</script>";
-    $isValid = false;
-  }
-
-  $searchphoenno = "SELECT * FROM Persons WHERE phoneno = '$phoneno'";
-  $stmt = $conn->prepare($searchphoenno);
-  $stmt->execute();
-  $result = $stmt->get_result();
-
-  if ($result->num_rows == 1) {
-    echo "<script>Toastify({
-        text: 'Phone number already exists',
-        duration: 4000,
-        backgroundColor: 'linear-gradient(to right, #ff5f6d, #ffc3a0)',
-        position: 'top-right',
-        close: true
-    }).showToast();</script>";
-    $isValid = false;
-  }
-
-
-  if (!$isValid) {
-    exit;
-  }
-
-
-  foreach ($croppedImages as $idx => $dataUrl) {
-    if (preg_match('/^data:image\/(\w+);base64,/', $dataUrl, $type)) {
-      $data = substr($dataUrl, strpos($dataUrl, ',') + 1);
-      $extension = strtolower($type[1]);
-
-      if (!in_array($extension, ['jpg', 'jpeg', 'png'])) {
-        echo "Invalid file type: " . $extension;
-        exit;
-      }
-      $data = base64_decode($data);
-      if ($data === false) {
-        echo "Base64 decode failed.";
-        exit;
-      }
-
-      $fileName = 'image_' . time() . '_' . $idx . '.' . $extension;
-      $filePath = $uploadDir . $fileName;
-
-      if (file_put_contents($filePath, $data) === false) {
-        echo "Failed to save file: " . $filePath;
-        exit;
-      }
-
-      $filePaths[] = $filePath;
-    } else {
-      echo "Invalid image format.";
-      exit;
-    }
-  }
-
-  $filePathsStr = implode(',', $filePaths);
-
-  $sql = "INSERT INTO Persons (password, username, firstname, lastname, phoneno, gender, street, city, state, country, zipcode, languages, email,image_path,add_phoneno)
-          VALUES ('$password', '$username', '$firstname', '$lastname', '$phoneno', '$gender', '$street', '$city', '$state', '$country', '$zipcode', '$all_languages', '$email','$filePathsStr','$add_phoneno')";
-
-  if ($conn->query($sql) === TRUE) {
-
-    echo "<script>Toastify({
-        text: 'Account Created Successfully!',
-        duration: 4000,
-        backgroundColor: 'linear-gradient(to right,rgb(19, 196, 49), rgb(124, 224, 110)',
-        position: 'top-right',
-        close: true
-    }).showToast();</script>";
-    exit();
-  } else {
-    echo "Error: " . $sql . "<br>" . $conn->error;
-  }
-}
-
-$conn->close();
-?>
