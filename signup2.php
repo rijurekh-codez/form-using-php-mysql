@@ -2199,10 +2199,6 @@
     </div>
   `;
         }
-
-
-
-        // document.onload = () => {
         var ind = "<?php if (isset($_POST['country'])) echo  htmlspecialchars($_POST['country']); ?>";
         ind = ind.toLocaleLowerCase();
 
@@ -2211,7 +2207,6 @@
             if (document.getElementById('state'))
                 document.getElementById('state').style.display = "none";
         }
-        // }
 
 
         // $('#myform').on('submit', function(e) {
@@ -2385,6 +2380,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     }
     $uploadDir = 'Uploads/';
     $filePaths = [];
+
+
 
     $firstname = trim($firstname);
     $lastname = trim($lastname);
