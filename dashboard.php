@@ -1,21 +1,85 @@
 <?php
-session_start();
+require 'vendor/autoload.php';
 
-if (!isset($_SESSION['user'])) {
-    header('Location: signin.php');
-    exit;
-}
+use PhpOffice\PhpSpreadsheet\Spreadsheet;
+use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
+
 include 'db.php';
-$username = $_SESSION['user'];
 
-$sql = "SELECT * FROM Persons WHERE username = ?";
+$sql = "SELECT * FROM OutageData;";
 $stmt = $conn->prepare($sql);
-$stmt->bind_param("s", $username);
 $stmt->execute();
 $result = $stmt->get_result();
-$row = $result->fetch_assoc();
-$image_paths = explode(',', $row['image_path']);
-$first_image = $image_paths[0];
+
+$tmp = [];
+while ($row = $result->fetch_assoc()) {
+    $tmp[] = $row;
+}
+
+$spreadsheet = new Spreadsheet();
+$activeWorksheet = $spreadsheet->getActiveSheet();
+
+$activeWorksheet->setCellValue('A1', 'ID');
+$activeWorksheet->setCellValue('B1', 'Circle');
+$activeWorksheet->setCellValue('C1', 'Entity');
+$activeWorksheet->setCellValue('D1', 'Outage Month');
+$activeWorksheet->setCellValue('E1', 'State');
+$activeWorksheet->setCellValue('F1', 'Cluster');
+$activeWorksheet->setCellValue('G1', 'Site ID');
+$activeWorksheet->setCellValue('H1', 'ERP ID');
+$activeWorksheet->setCellValue('I1', 'Site Name');
+$activeWorksheet->setCellValue('J1', 'Category');
+$activeWorksheet->setCellValue('K1', 'Sub Category');
+$activeWorksheet->setCellValue('L1', 'Tenant Onair Date');
+$activeWorksheet->setCellValue('M1', 'Operator Name');
+$activeWorksheet->setCellValue('N1', 'Operator Product');
+$activeWorksheet->setCellValue('O1', 'Operator ID');
+$activeWorksheet->setCellValue('P1', 'Vendor Name');
+$activeWorksheet->setCellValue('Q1', 'IP Fee');
+$activeWorksheet->setCellValue('R1', 'Signoff IP Slab');
+$activeWorksheet->setCellValue('S1', 'Signoff Circle Customer Uptime');
+$activeWorksheet->setCellValue('T1', 'Site Outage Mins');
+$activeWorksheet->setCellValue('U1', 'Signoff Uptime');
+$activeWorksheet->setCellValue('V1', 'Signoff Penalty');
+$activeWorksheet->setCellValue('W1', 'Signoff Reward');
+$activeWorksheet->setCellValue('X1', 'Cost of FO Loss Outage Mins');
+$activeWorksheet->setCellValue('Y1', 'Status');
+
+
+$row = 2;
+
+foreach ($tmp as $value) {
+    $activeWorksheet->setCellValue('A' . $row, $value['id']);
+    $activeWorksheet->setCellValue('B' . $row, $value['Circle']);
+    $activeWorksheet->setCellValue('C' . $row, $value['Entity']);
+    $activeWorksheet->setCellValue('D' . $row, $value['OutageMonth']);
+    $activeWorksheet->setCellValue('E' . $row, $value['State']);
+    $activeWorksheet->setCellValue('F' . $row, $value['Cluster']);
+    $activeWorksheet->setCellValue('G' . $row, $value['SiteID']);
+    $activeWorksheet->setCellValue('H' . $row, $value['ERPID']);
+    $activeWorksheet->setCellValue('I' . $row, $value['SiteName']);
+    $activeWorksheet->setCellValue('J' . $row, $value['Category']);
+    $activeWorksheet->setCellValue('K' . $row, $value['SubCategory']);
+    $activeWorksheet->setCellValue('L' . $row, $value['TenantOnairDate']);
+    $activeWorksheet->setCellValue('M' . $row, $value['OperatorName']);
+    $activeWorksheet->setCellValue('N' . $row, $value['OperatorProduct']);
+    $activeWorksheet->setCellValue('O' . $row, $value['OperatorID']);
+    $activeWorksheet->setCellValue('P' . $row, $value['VendorName']);
+    $activeWorksheet->setCellValue('Q' . $row, $value['IPFee']);
+    $activeWorksheet->setCellValue('R' . $row, $value['SignoffIPSlab']);
+    $activeWorksheet->setCellValue('S' . $row, $value['SignoffCircleCustomerUptime']);
+    $activeWorksheet->setCellValue('T' . $row, $value['SiteOutageMins']);
+    $activeWorksheet->setCellValue('U' . $row, $value['SignoffUptime']);
+    $activeWorksheet->setCellValue('V' . $row, $value['SignoffPenalty']);
+    $activeWorksheet->setCellValue('W' . $row, $value['SignoffReward']);
+    $activeWorksheet->setCellValue('X' . $row, $value['CostOfFOLossOutageMins']);
+    $activeWorksheet->setCellValue('Y' . $row, $value['Status']);
+    $row++;
+}
+
+$filename = "outage_data.xlsx";
+$writer = new Xlsx($spreadsheet);
+$writer->save("output/" . $filename);
 ?>
 
 <!DOCTYPE html>
@@ -26,171 +90,75 @@ $first_image = $image_paths[0];
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Dashboard</title>
     <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
-
-
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
 </head>
 
-<body class="px-4 mt-2 flex justify-center">
+<body class="bg-gray-100">
 
-    <div class="border-2 border-gray-300 rounded-lg p-5 w-200 bg-gray-100">
-        <div class="flex flex flex-col md:flex-row items-center gap-4 mb-7  ">
-            <img class="w-[150px] rounded-full mt-2" src=<?php echo $first_image; ?> alt="Profile Picture">
+    <table class="min-w-full table-auto bg-white border-collapse shadow-lg rounded-md">
+        <thead>
+            <tr class="bg-gray-200">
+                <th class="px-3 py-1 text-left text-sm font-semibold text-gray-600 border border-gray-400 border-t-0 border-l-0 border-r-1 border-b-0">Id</th>
+                <th class="px-3 py-1 text-left text-sm font-semibold text-gray-600 border border-gray-400 border-t-0 border-l-0 border-r-1 border-b-0">Circle</th>
+                <th class="px-3 py-1 text-left text-sm font-semibold text-gray-600 border border-gray-400 border-t-0 border-l-0 border-r-1 border-b-0">Entity</th>
+                <th class="px-3 py-1 text-left text-sm font-semibold text-gray-600 border border-gray-400 border-t-0 border-l-0 border-r-1 border-b-0">Outage Month</th>
+                <th class="px-3 py-1 text-left text-sm font-semibold text-gray-600 border border-gray-400 border-t-0 border-l-0 border-r-1 border-b-0">State</th>
+                <th class="px-3 py-1 text-left text-sm font-semibold text-gray-600 border border-gray-400 border-t-0 border-l-0 border-r-1 border-b-0">Cluster</th>
+                <th class="px-3 py-1 text-left text-sm font-semibold text-gray-600 border border-gray-400 border-t-0 border-l-0 border-r-1 border-b-0">Site ID</th>
+                <th class="px-3 py-1 text-left text-sm font-semibold text-gray-600 border border-gray-400 border-t-0 border-l-0 border-r-1 border-b-0">ERP ID</th>
+                <th class="px-3 py-1 text-left text-sm font-semibold text-gray-600 border border-gray-400 border-t-0 border-l-0 border-r-1 border-b-0">Site Name</th>
+                <th class="px-3 py-1 text-left text-sm font-semibold text-gray-600 border border-gray-400 border-t-0 border-l-0 border-r-1 border-b-0">Category</th>
+                <th class="px-3 py-1 text-left text-sm font-semibold text-gray-600 border border-gray-400 border-t-0 border-l-0 border-r-1 border-b-0">Sub Category</th>
+                <th class="px-3 py-1 text-left text-sm font-semibold text-gray-600 border border-gray-400 border-t-0 border-l-0 border-r-1 border-b-0">Tenant Onair Date</th>
+                <th class="px-3 py-1 text-left text-sm font-semibold text-gray-600 border border-gray-400 border-t-0 border-l-0 border-r-1 border-b-0">Operator Name</th>
+                <th class="px-3 py-1 text-left text-sm font-semibold text-gray-600 border border-gray-400 border-t-0 border-l-0 border-r-1 border-b-0">Operator Product</th>
+                <th class="px-3 py-1 text-left text-sm font-semibold text-gray-600 border border-gray-400 border-t-0 border-l-0 border-r-1 border-b-0">Operator ID</th>
+                <th class="px-3 py-1 text-left text-sm font-semibold text-gray-600 border border-gray-400 border-t-0 border-l-0 border-r-1 border-b-0">Vendor Name</th>
+                <th class="px-3 py-1 text-left text-sm font-semibold text-gray-600 border border-gray-400 border-t-0 border-l-0 border-r-1 border-b-0">IP Fee</th>
+                <th class="px-3 py-1 text-left text-sm font-semibold text-gray-600 border border-gray-400 border-t-0 border-l-0 border-r-1 border-b-0">Signoff IP Slab</th>
+                <th class="px-3 py-1 text-left text-sm font-semibold text-gray-600 border border-gray-400 border-t-0 border-l-0 border-r-1 border-b-0">Signoff Circle Customer Uptime</th>
+                <th class="px-3 py-1 text-left text-sm font-semibold text-gray-600 border border-gray-400 border-t-0 border-l-0 border-r-1 border-b-0">Site Outage Mins</th>
+                <th class="px-3 py-1 text-left text-sm font-semibold text-gray-600 border border-gray-400 border-t-0 border-l-0 border-r-1 border-b-0">Signoff Uptime</th>
+                <th class="px-3 py-1 text-left text-sm font-semibold text-gray-600 border border-gray-400 border-t-0 border-l-0 border-r-1 border-b-0">Signoff Penalty</th>
+                <th class="px-3 py-1 text-left text-sm font-semibold text-gray-600 border border-gray-400 border-t-0 border-l-0 border-r-1 border-b-0">Signoff Reward</th>
+                <th class="px-3 py-1 text-left text-sm font-semibold text-gray-600 border border-gray-400 border-t-0 border-l-0 border-r-1 border-b-0">Cost of FO Loss Outage Mins</th>
+                <th class="px-3 py-1 text-left text-sm font-semibold text-gray-600">Status</th>
+            </tr>
+        </thead>
+        <tbody>
+            <?php foreach ($tmp as $row): ?>
+                <tr class="border-t border-gray-200">
+                    <td class="px-3 py-1 text-sm text-gray-700 border border-gray-300 border-t-0 border-l-0 border-r-1 border-b-0"><?php echo htmlspecialchars($row['id']); ?></td>
+                    <td class="px-3 py-1 text-sm text-gray-700 border border-gray-300 border-t-0 border-l-0 border-r-1 border-b-0"><?php echo htmlspecialchars($row['Circle']); ?></td>
+                    <td class="px-3 py-1 text-sm text-gray-700 border border-gray-300 border-t-0 border-l-0 border-r-1 border-b-0"><?php echo htmlspecialchars($row['Entity']); ?></td>
+                    <td class="px-3 py-1 text-sm text-gray-700 border border-gray-300 border-t-0 border-l-0 border-r-1 border-b-0"><?php echo htmlspecialchars($row['OutageMonth']); ?></td>
+                    <td class="px-3 py-1 text-sm text-gray-700 border border-gray-300 border-t-0 border-l-0 border-r-1 border-b-0"><?php echo htmlspecialchars($row['State']); ?></td>
+                    <td class="px-3 py-1 text-sm text-gray-700 border border-gray-300 border-t-0 border-l-0 border-r-1 border-b-0"><?php echo htmlspecialchars($row['Cluster']); ?></td>
+                    <td class="px-3 py-1 text-sm text-gray-700 border border-gray-300 border-t-0 border-l-0 border-r-1 border-b-0"><?php echo htmlspecialchars($row['SiteID']); ?></td>
+                    <td class="px-3 py-1 text-sm text-gray-700 border border-gray-300 border-t-0 border-l-0 border-r-1 border-b-0"><?php echo htmlspecialchars($row['ERPID']); ?></td>
+                    <td class="px-3 py-1 text-sm text-gray-700 border border-gray-300 border-t-0 border-l-0 border-r-1 border-b-0"><?php echo htmlspecialchars($row['SiteName']); ?></td>
+                    <td class="px-3 py-1 text-sm text-gray-700 border border-gray-300 border-t-0 border-l-0 border-r-1 border-b-0"><?php echo htmlspecialchars($row['Category']); ?></td>
+                    <td class="px-3 py-1 text-sm text-gray-700 border border-gray-300 border-t-0 border-l-0 border-r-1 border-b-0"><?php echo htmlspecialchars($row['SubCategory']); ?></td>
+                    <td class="px-3 py-1 text-sm text-gray-700 border border-gray-300 border-t-0 border-l-0 border-r-1 border-b-0"><?php echo htmlspecialchars($row['TenantOnairDate']); ?></td>
+                    <td class="px-3 py-1 text-sm text-gray-700 border border-gray-300 border-t-0 border-l-0 border-r-1 border-b-0"><?php echo htmlspecialchars($row['OperatorName']); ?></td>
+                    <td class="px-3 py-1 text-sm text-gray-700 border border-gray-300 border-t-0 border-l-0 border-r-1 border-b-0"><?php echo htmlspecialchars($row['OperatorProduct']); ?></td>
+                    <td class="px-3 py-1 text-sm text-gray-700 border border-gray-300 border-t-0 border-l-0 border-r-1 border-b-0"><?php echo htmlspecialchars($row['OperatorID']); ?></td>
+                    <td class="px-3 py-1 text-sm text-gray-700 border border-gray-300 border-t-0 border-l-0 border-r-1 border-b-0"><?php echo htmlspecialchars($row['VendorName']); ?></td>
+                    <td class="px-3 py-1 text-sm text-gray-700 border border-gray-300 border-t-0 border-l-0 border-r-1 border-b-0"><?php echo htmlspecialchars($row['IPFee']); ?></td>
+                    <td class="px-3 py-1 text-sm text-gray-700 border border-gray-300 border-t-0 border-l-0 border-r-1 border-b-0"><?php echo htmlspecialchars($row['SignoffIPSlab']); ?></td>
+                    <td class="px-3 py-1 text-sm text-gray-700 border border-gray-300 border-t-0 border-l-0 border-r-1 border-b-0"><?php echo htmlspecialchars($row['SignoffCircleCustomerUptime']); ?></td>
+                    <td class="px-3 py-1 text-sm text-gray-700 border border-gray-300 border-t-0 border-l-0 border-r-1 border-b-0"><?php echo htmlspecialchars($row['SiteOutageMins']); ?></td>
+                    <td class="px-3 py-1 text-sm text-gray-700 border border-gray-300 border-t-0 border-l-0 border-r-1 border-b-0"><?php echo htmlspecialchars($row['SignoffUptime']); ?></td>
+                    <td class="px-3 py-1 text-sm text-gray-700 border border-gray-300 border-t-0 border-l-0 border-r-1 border-b-0"><?php echo htmlspecialchars($row['SignoffPenalty']); ?></td>
+                    <td class="px-3 py-1 text-sm text-gray-700 border border-gray-300 border-t-0 border-l-0 border-r-1 border-b-0"><?php echo htmlspecialchars($row['SignoffReward']); ?></td>
+                    <td class="px-3 py-1 text-sm text-gray-700 border border-gray-300 border-t-0 border-l-0 border-r-1 border-b-0"><?php echo htmlspecialchars($row['CostOfFOLossOutageMins']); ?></td>
+                    <td class="px-3 py-1 text-sm text-gray-700"><?php echo htmlspecialchars($row['Status']); ?></td>
+                </tr>
+            <?php endforeach; ?>
+        </tbody>
+    </table>
 
-            <div>
-                <p class="text-[30px] font-semibold"><?php echo $row['firstname'] . ' ' . $row['lastname']; ?></p>
-                <p class="text-[16px] text-gray-600"><?php echo '@' . $row['username'] ?></p>
-                <div class="mt-2 flex gap-2">
-
-                    <a href="update.php" class=" text-black border-1 px-3 py-1 rounded-sm text-[14px] text-center">Update Profile</a>
-
-
-                    <a href="logout.php" class="bg-black text-white px-3 py-1 rounded-sm text-[14px] text-center">Log Out</a>
-                </div>
-            </div>
-
-            <!-- details -->
-
-        </div>
-        <div class="grid lg:grid-cols-2 md:grid-cols-2 gap-4 sm:grid-cols-2 xs:grid-cols-1 gap-4">
-
-            <div>
-
-                <div class="text-center flex items-center gap-2 mb-4">
-                    <svg class="h-5 w-5 text-neutral-700 " fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
-                    </svg>
-
-                    <p class="text-[20px] font-medium text-gray-900">Personal Information: </p>
-                </div>
-
-                <div class="flex items-center gap-2">
-                    <svg class="h-4 w-4 text-gray-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                        <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z" />
-                        <polyline points="22,6 12,13 2,6" />
-                    </svg>
-                    <p class="text-gray-600">Email</p>
-                </div>
-                <p class="mb-3 text-[17px] font-small"><?php echo $row['email'] ?></p>
-
-
-                <div class="text-center flex items-center gap-2">
-                    <svg class="h-5 w-5 text-gray-500" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
-                        <path stroke="none" d="M0 0h24v24H0z" />
-                        <path d="M5 4h4l2 5l-2.5 1.5a11 11 0 0 0 5 5l1.5 -2.5l5 2v4a2 2 0 0 1 -2 2a16 16 0 0 1 -15 -15a2 2 0 0 1 2 -2" />
-                    </svg>
-                    <p class="text-gray-600">Phone No</p>
-                </div>
-                <p class="mb-3 text-[17px] font-small"><?php echo $row['phoneno'] ?></p>
-
-
-                <?php if ($row["add_phoneno"] != null) { ?>
-                    <div class="text-center flex items-center gap-2">
-                        <svg class="h-5 w-5 text-gray-500" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
-                            <path stroke="none" d="M0 0h24v24H0z" />
-                            <path d="M5 4h4l2 5l-2.5 1.5a11 11 0 0 0 5 5l1.5 -2.5l5 2v4a2 2 0 0 1 -2 2a16 16 0 0 1 -15 -15a2 2 0 0 1 2 -2" />
-                        </svg>
-                        <p class="text-gray-600">Additional Phone No</p>
-                    </div>
-                    <p class="mb-3 text-[17px] font-small"><?php echo $row["add_phoneno"]; ?></p>
-                <?php } ?>
-
-                <div class="text-center flex items-center gap-2">
-                    <svg class="h-5 w-5 text-gray-500" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
-                        <path stroke="none" d="M0 0h24v24H0z" />
-                        <circle cx="9" cy="7" r="4" />
-                        <path d="M3 21v-2a4 4 0 0 1 4 -4h4a4 4 0 0 1 4 4v2" />
-                        <path d="M16 3.13a4 4 0 0 1 0 7.75" />
-                        <path d="M21 21v-2a4 4 0 0 0 -3 -3.85" />
-                    </svg>
-                    <p class="text-gray-600">Gender</p>
-                </div>
-                <p class="mb-3 text-[17px] font-small"><?php echo $row['gender'] ?></p>
-
-                <div class="text-center flex items-center gap-2">
-                    <svg class="h-6 w-6 text-gray-500" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
-                        <path stroke="none" d="M0 0h24v24H0z" />
-                        <path d="M5 7h7m-2 -2v2a5 8 0 0 1 -5 8m1 -4a7 4 0 0 0 6.7 4" />
-                        <path d="M11 19l4 -9l4 9m-.9 -2h-6.2" />
-                    </svg>
-                    <p class="text-gray-600">Languages</p>
-                </div>
-                <p class="mb-3 text-[17px] font-small"><?php if (isset($row['languages'])) print_r($row['languages']) ?></p>
-            </div>
-
-
-            <div>
-                <div class="text-center flex items-center gap-2 mb-4">
-                    <svg class="h-5 w-5 text-neutral-700" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
-                    </svg>
-
-                    <p class="text-[20px] font-medium text-gray-900">Address: </p>
-                </div>
-
-
-                <div class="text-center flex items-center gap-2">
-                    <svg class="h-5 w-5 text-gray-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
-                    </svg>
-
-                    <p class="text-gray-600">Street</p>
-                </div>
-                <p class="mb-3 text-[17px] font-small"><?php echo $row['street'] ?></p>
-
-
-                <div class="text-center flex items-center gap-2">
-                    <svg class="h-5 w-5 text-gray-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
-                    </svg>
-
-                    <p class="text-gray-600">City</p>
-                </div>
-                <p class="mb-3 text-[17px] font-small"><?php echo $row['city'] ?></p>
-
-
-                <div class="text-center flex items-center gap-2">
-                    <svg class="h-5 w-5 text-gray-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
-                    </svg>
-
-                    <p class="text-gray-600">State</p>
-                </div>
-
-                <p class="mb-3 text-[17px] font-small"><?php echo $row['state'] ?></p>
-
-
-                <div class="text-center flex items-center gap-2">
-                    <svg class="h-5 w-5 text-gray-500" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
-                        <path stroke="none" d="M0 0h24v24H0z" />
-                        <circle cx="12" cy="12" r="9" />
-                        <line x1="3.6" y1="9" x2="20.4" y2="9" />
-                        <line x1="3.6" y1="15" x2="20.4" y2="15" />
-                        <path d="M11.5 3a17 17 0 0 0 0 18" />
-                        <path d="M12.5 3a17 17 0 0 1 0 18" />
-                    </svg>
-                    <p class="text-gray-600">Country</p>
-                </div>
-                <p class="mb-3 text-[17px] font-small"><?php echo $row['country'] ?></p>
-
-
-                <div class="text-center flex items-center gap-2">
-                    <svg class="h-5 w-5 text-gray-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
-                    </svg>
-                    <p class="text-gray-600">Zip code</p>
-                </div>
-                <p class="mb-3 text-[17px] font-small"><?php echo $row['zipcode'] ?></p>
-            </div>
-        </div>
-    </div>
-
-
-
-
+    <a class="bg-green-600 text-white px-3 py-1 rounded-sm text-[14px] mt-4 inline-block" href="output/<?php echo $filename; ?>">Download Excel</a>
 
 </body>
 
